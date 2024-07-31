@@ -21,12 +21,15 @@ repositories {
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings ploceus.featherMappings(project.feather_build)
-	nests ploceus.nests(project.nests_build) // remove this line if not using nests
+//	nests ploceus.nests(project.nests_build) // remove this line if not using nests
 
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	ploceus.addCommonLibraries()
 	ploceus.dependOsl(project.osl_version)
+
+	// I want to use @Expressions :p
+	include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:$project.mixinextras_version")))
 }
 
 processResources {
