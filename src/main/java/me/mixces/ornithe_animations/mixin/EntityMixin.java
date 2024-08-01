@@ -15,9 +15,6 @@ public abstract class EntityMixin {
 	@Shadow
 	public double y;
 
-	@Unique
-	public float ornitheAnimations$yOffset;
-
     @Unique
 	public float ornitheAnimations$ySize;
 
@@ -52,6 +49,6 @@ public abstract class EntityMixin {
 		)
     )
     private void ornitheAnimations$reAssignY(CallbackInfo ci) {
-		y += ornitheAnimations$yOffset - ornitheAnimations$ySize;
+		y -= ornitheAnimations$ySize;
     }
 }
