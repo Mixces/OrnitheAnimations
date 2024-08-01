@@ -30,13 +30,15 @@ public abstract class ClientPlayerInteractionManagerMixin {
 			value = "INVOKE",
 			target = "Lnet/minecraft/client/ClientPlayerInteractionManager;updateSelectedHotbarSlot()V",
 			shift = At.Shift.AFTER
-		)
+		),
+		cancellable = true
 	)
     private void ornitheAnimations$resetDestroyProgress(BlockPos pos, Direction face, CallbackInfoReturnable<Boolean> cir) {
         if (minecraft.player.isUsingItem() && minecraft.player.canModifyWorld()) {
             if (miningProgress > 0.0F) {
                 stopMiningBlock();
             }
+			cir.setReturnValue(true);
         }
     }
 }
