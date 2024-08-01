@@ -1,13 +1,12 @@
 package me.mixces.ornithe_animations.handler;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.living.LivingEntity;
 
 public class DamageLayerHandler {
     public static void setupOverlayColor(LivingEntity entitylivingbaseIn, float tickDelta) {
         float f12 = entitylivingbaseIn.getBrightness(tickDelta);
-		Minecraft.getInstance().gameRenderer.disableLightMap();
+		GlStateManager.pushMatrix();
 		GlStateManager.disableTexture();
 		GlStateManager.disableAlphaTest();
 		GlStateManager.enableBlend();
@@ -21,6 +20,6 @@ public class DamageLayerHandler {
 		GlStateManager.disableBlend();
 		GlStateManager.enableAlphaTest();
 		GlStateManager.enableTexture();
-		Minecraft.getInstance().gameRenderer.enableLightMap();
+		GlStateManager.popMatrix();
     }
 }
