@@ -1,13 +1,15 @@
 package me.mixces.ornithe_animations.mixin;
 
-import me.mixces.ornithe_animations.util.GlHelper;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import me.mixces.ornithe_animations.handler.SpriteHandler;
 import net.minecraft.client.render.entity.ProjectileRenderer;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.render.model.block.ModelTransformations;
+import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ProjectileRenderer.class)
 public abstract class ProjectileRendererMixin {
@@ -38,14 +40,14 @@ public abstract class ProjectileRendererMixin {
         return -angle;
     }
 
-	@Inject(
-		method = "render",
-		at = @At(
-			value = "INVOKE",
-			target = "Lnet/minecraft/client/render/item/ItemRenderer;renderHeldItem(Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render/model/block/ModelTransformations$Type;)V"
-		)
-	)
-	private void ornitheAnimations$projectilePosition(Entity entity, double dx, double dy, double dz, float yaw, float tickDelta, CallbackInfo ci) {
-		GlHelper.getBuilder().translate(0.0F, 0.25F, 0.0F);
-	}
+	@WrapOperation(
+            method = "render",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/render/item/ItemRenderer;renderHeldItem(Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render/model/block/ModelTransformations$Type;)V"
+            )
+    )
+    private void ornitheAnimations$renderSprite(ItemRenderer instance, ItemStack stack, ModelTransformations.Type transformationType, Operation<Void> original) {
+		SpriteHandler.renderSpriteWithLayer(instance.getModelShaper().getModel(stack), stack, stack.getItem());
+    }
 }

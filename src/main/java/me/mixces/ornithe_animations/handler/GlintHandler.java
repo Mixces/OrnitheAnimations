@@ -66,6 +66,7 @@ public class GlintHandler {
 		}
 	}
 
+	//todo: fix this mess lol
 	public static void renderGlintGui(int x, int y, float zOffset, Identifier glintTexture) {
 		float red = 128 / 255f;
 		float green = 64 / 255f;
