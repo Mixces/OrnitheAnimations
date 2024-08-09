@@ -11,6 +11,12 @@ public abstract class LivingEntityMixin extends EntityMixin {
 	@Shadow
 	protected abstract int getMiningSpeedMultiplier();
 
+	@Shadow
+	public boolean handSwinging;
+
+	@Shadow
+	public int handSwingTicks;
+
 	@Unique
 	public int ornitheAnimations$getMiningSpeedMultiplier() {
 		return getMiningSpeedMultiplier();

@@ -19,14 +19,6 @@ public abstract class EntityMixin {
 	public float ornitheAnimations$ySize;
 
     @Inject(
-		method = "teleport(DDDFF)V",
-		at = @At("HEAD")
-    )
-    private void ornitheAnimations$setYSize(double x, double y, double z, float yaw, float pitch, CallbackInfo ci) {
-		ornitheAnimations$ySize = 0.0F;
-    }
-
-    @Inject(
 		method = "move",
 		at = @At(
 			value = "INVOKE_STRING",

@@ -59,12 +59,12 @@ public abstract class HeldItemLayerMixin {
 		GlHelper builder = GlHelper.getBuilder();
 		float var7;
 		/* original transformations from 1.7 */
-		if (stack.getItem() == Items.BOW) {
+		if (item == Items.BOW) {
 			var7 = 0.625F;
 			builder.translate(0.0F, 0.125F, 0.3125F).yaw(-20.0F).scale(var7, -var7, var7).pitch(-100.0F).yaw(45.0F);
-		} else if (stack.getItem().isHandheld()) {
+		} else if (item.isHandheld()) {
 			var7 = 0.625F;
-			if (stack.getItem().shouldRotate()) {
+			if (item.shouldRotate()) {
 				builder.roll(180.0F).translate(0.0F, -0.125F, 0.0F);
 			}
 			if (entity instanceof PlayerEntity && ((PlayerEntity) entity).getItemUseTimer() > 0 && ((PlayerEntity) entity).isSwordBlocking()) {
@@ -85,7 +85,7 @@ public abstract class HeldItemLayerMixin {
 		),
 		index = 2
 	)
-	private ModelTransformations.Type ornitheAnimations$changeTransformType(ModelTransformations.Type transform, @Local ItemStack stack) {
+	private ModelTransformations.Type ornitheAnimations$changeTransformType(ModelTransformations.Type transform) {
 		return ModelTransformations.Type.NONE;
 	}
 }

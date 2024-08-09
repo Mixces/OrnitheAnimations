@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LocalClientPlayerEntity.class)
-public abstract class LocalClientPlayerEntityMixin extends LivingEntityMixin {
+public abstract class LocalClientPlayerEntityMixin extends PlayerEntityMixin {
 
     @Shadow
 	public PlayerInput input;
@@ -33,19 +33,18 @@ public abstract class LocalClientPlayerEntityMixin extends LivingEntityMixin {
 
     @WrapMethod(method = "swingHand")
     private void ornitheAnimations$useFakeSwing(Operation<Void> original) {
-        final LocalClientPlayerEntity player = ((LocalClientPlayerEntity) (Object) this);
-        if (player.isUsingItem()) {
-            ornitheAnimations$swingItem(player);
+        if (isUsingItem()) {
+            ornitheAnimations$swingItem();
         } else {
 			original.call();
 		}
     }
 
     @Unique
-    private void ornitheAnimations$swingItem(LocalClientPlayerEntity player) {
-		if (!player.handSwinging || player.handSwingTicks >= ornitheAnimations$getMiningSpeedMultiplier() / 2 || player.handSwingTicks < 0) {
-			player.handSwingTicks = -1;
-			player.handSwinging = true;
+    private void ornitheAnimations$swingItem() {
+		if (!handSwinging || handSwingTicks >= ornitheAnimations$getMiningSpeedMultiplier() / 2 || handSwingTicks < 0) {
+			handSwingTicks = -1;
+			handSwinging = true;
 		}
     }
 }
