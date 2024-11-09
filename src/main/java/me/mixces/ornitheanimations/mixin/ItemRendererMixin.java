@@ -22,16 +22,15 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Mixin(ItemRenderer.class)
 public abstract class ItemRendererMixin {
-
-	@Shadow
-	public float zOffset;
 
 	@Shadow
 	@Final
@@ -49,6 +48,39 @@ public abstract class ItemRendererMixin {
 
 	@Unique
 	private boolean ornitheAnimations$isHeld;
+
+	@Unique
+	private BakedModel ornitheAnimations$model = null;
+
+	@Inject(
+		method = "renderItem",
+		at = @At("HEAD")
+	)
+	private void ornitheAnimations$captureModel(ItemStack stack, BakedModel model, CallbackInfo ci) {
+		ornitheAnimations$model = model;
+	}
+
+	@Inject(
+		method = "renderItem",
+		at = @At("TAIL")
+	)
+	private void ornitheAnimations$clearModel(CallbackInfo ci) {
+		/* we need to clear this field */
+		ornitheAnimations$model = null;
+	}
+
+	@ModifyArgs(
+		method = "applyNormal",
+		at = @At(
+			value = "INVOKE",
+			target = "Lcom/mojang/blaze3d/vertex/BufferBuilder;postNormal(FFF)V"
+		)
+	)
+	private void ornitheAnimations$modifyNormals(Args args) {
+		if (!ornitheAnimations$isGui && !ornitheAnimations$isHeld && !ornitheAnimations$model.isGui3d()) {
+			args.setAll(args.get(0), args.get(2), args.get(1));
+		}
+	}
 
 	@ModifyExpressionValue(
 		method = "render(Lnet/minecraft/client/resource/model/BakedModel;ILnet/minecraft/item/ItemStack;)V",

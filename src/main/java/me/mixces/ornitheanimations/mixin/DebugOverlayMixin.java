@@ -1,5 +1,9 @@
 package me.mixces.ornitheanimations.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import me.mixces.ornitheanimations.hook.DebugComponents;
 import net.minecraft.client.gui.overlay.DebugOverlay;
 import net.minecraft.client.render.TextRenderer;
@@ -48,18 +52,18 @@ public class DebugOverlayMixin {
 		}
 	}
 
-	@Redirect(
+	@ModifyExpressionValue(
 		method = "drawSystemInfo",
 		at = @At(
 			value = "INVOKE",
 			target = "Lnet/minecraft/client/gui/overlay/DebugOverlay;getSystemInfo()Ljava/util/List;"
 		)
 	)
-	private List<String> ornitheAnimations$replaceSystemInfo(DebugOverlay instance) {
+	private List<String> ornitheAnimations$replaceSystemInfo(List<String> original) {
 		return DebugComponents.getRight();
 	}
 
-	@Redirect(
+	@WrapOperation(
 		method = {"drawGameInfo", "drawSystemInfo"},
 		at = @At(
 			value = "FIELD",
@@ -67,41 +71,42 @@ public class DebugOverlayMixin {
 			target = "Lnet/minecraft/client/render/TextRenderer;fontHeight:I"
 		)
 	)
-	private int ornitheAnimations$changeFontHeight(TextRenderer instance) {
+	private int ornitheAnimations$changeFontHeight(TextRenderer instance, Operation<Integer> original) {
 		return 10;
 	}
 
-	@Redirect(
+	@WrapWithCondition(
 		method = {"drawGameInfo", "drawSystemInfo"},
 		at = @At(
 			value = "INVOKE",
 			target = "Lnet/minecraft/client/gui/overlay/DebugOverlay;fill(IIIII)V"
 		)
 	)
-	private void ornitheAnimations$removeBackgroundRectangle(int left, int top, int right, int bottom, int color) {
+	private boolean ornitheAnimations$removeBackgroundRectangle(int left, int top, int right, int bottom, int color) {
 		/* disable rendering the rectangular background, just like 1.7 */
+		return false;
 	}
 
-	@Redirect(
+	@WrapOperation(
 		method = "drawSystemInfo",
 		at = @At(
 			value = "INVOKE",
 			target = "Lnet/minecraft/client/render/TextRenderer;draw(Ljava/lang/String;III)I"
 		)
 	)
-	private int ornitheAnimations$addTextShadow2(TextRenderer instance, String text, int x, int y, int color) {
+	private int ornitheAnimations$addTextShadow2(TextRenderer instance, String text, int x, int y, int color, Operation<Integer> original) {
 		/* uses the alternative drawString method which allows text shadows, just like in 1.7 */
 		return instance.draw(text, x, y, color, true);
 	}
 
-	@Redirect(
+	@WrapOperation(
 		method = "drawGameInfo",
 		at = @At(
 			value = "INVOKE",
 			target = "Lnet/minecraft/client/render/TextRenderer;draw(Ljava/lang/String;III)I"
 		)
 	)
-	private int ornitheAnimations$addTextShadow(TextRenderer instance, String text, int x, int y, int color) {
+	private int ornitheAnimations$addTextShadow(TextRenderer instance, String text, int x, int y, int color, Operation<Integer> original) {
 		/* same as above redirect, but the text is white, just like in 1.7 */
 		return instance.draw(text, x, y, 16777215, true);
 	}
