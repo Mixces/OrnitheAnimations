@@ -3,7 +3,6 @@ package me.mixces.ornitheanimations.mixin;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import me.mixces.ornitheanimations.OrnitheAnimations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.overlay.PlayerTabOverlay;
 import net.minecraft.client.network.PlayerInfo;
@@ -33,7 +32,7 @@ public class PlayerTabOverlayMixin {
 	)
 	public int ornitheAnimations$replace(List<PlayerInfo> instance, Operation<Integer> original) {
 		/* renders a fixed amount of player slots just like 1.7 */
-		return OrnitheAnimations.config.getSIMPLE_PLAYER_LIST().get() ? minecraft.getNetworkHandler().maxPlayerCount : original.call(instance);
+		return minecraft.getNetworkHandler().maxPlayerCount;
 	}
 
 	@WrapOperation(
@@ -46,7 +45,7 @@ public class PlayerTabOverlayMixin {
 	)
 	public int ornitheAnimations$staticSlotWidth(int a, int b, Operation<Integer> original) {
 		/* makes the slot width static just like 1.7 */
-		return OrnitheAnimations.config.getSIMPLE_PLAYER_LIST().get() ? 300 : original.call(a, b);
+		return 300;
 	}
 
 	@ModifyVariable(
@@ -56,7 +55,7 @@ public class PlayerTabOverlayMixin {
 	)
 	private int ornitheAnimations$capSlotWidth(int value) {
 		/* caps the slot width just like 1.7 */
-		if (OrnitheAnimations.config.getSIMPLE_PLAYER_LIST().get() && value > 150) {
+		if (value > 150) {
 			value = 150;
 		}
 		return value;
@@ -83,7 +82,7 @@ public class PlayerTabOverlayMixin {
 	)
 	private int ornitheAnimations$removeBackgroundSpace(int constant) {
 		/* cancels spacing */
-		return OrnitheAnimations.config.getSIMPLE_PLAYER_LIST().get() ? 0 : constant;
+		return 0;
 	}
 
 	@ModifyExpressionValue(
@@ -97,7 +96,7 @@ public class PlayerTabOverlayMixin {
 	)
 	public Text ornitheAnimations$disableHeaderElement(Text original) {
 		/* disables the tab header */
-		return OrnitheAnimations.config.getSIMPLE_PLAYER_LIST().get() ? null : original;
+		return null;
 	}
 
 	@ModifyExpressionValue(
@@ -111,7 +110,7 @@ public class PlayerTabOverlayMixin {
 	)
 	public Text ornitheAnimations$disableFooterElement(Text original) {
 		/* disables the tab footer */
-		return OrnitheAnimations.config.getSIMPLE_PLAYER_LIST().get() ? null : original;
+		return null;
 	}
 
 	@ModifyVariable(
@@ -121,7 +120,7 @@ public class PlayerTabOverlayMixin {
 	)
 	private boolean ornitheAnimations$disablePlayerHeads(boolean original) {
 		/* disables the rendering of player heads */
-		return !OrnitheAnimations.config.getSIMPLE_PLAYER_LIST().get() && original;
+		return false;
 	}
 
 	@ModifyArg(
@@ -135,6 +134,6 @@ public class PlayerTabOverlayMixin {
 	)
 	private int ornitheAnimations$removeExtraPixels(int par1) {
 		/* corrects for an extra pixel added in 1.8+ */
-		return par1 - (OrnitheAnimations.config.getSIMPLE_PLAYER_LIST().get() ? 1 : 0);
+		return par1 - 1;
 	}
 }

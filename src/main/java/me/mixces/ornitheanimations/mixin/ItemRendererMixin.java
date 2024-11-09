@@ -3,10 +3,8 @@ package me.mixces.ornitheanimations.mixin;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import kotlin.Unit;
-import me.mixces.ornitheanimations.OrnitheAnimations;
 import me.mixces.ornitheanimations.handler.GlintHandler;
 import me.mixces.ornitheanimations.hook.GlintModel;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.block.ModelTransformations;
 import net.minecraft.client.render.texture.TextureManager;
@@ -79,9 +77,6 @@ public abstract class ItemRendererMixin {
 		)
 	)
 	private void ornitheAnimations$modifyNormals(Args args) {
-		if (!OrnitheAnimations.config.getFAST_ITEMS().get()) {
-			return;
-		}
 		if (!ornitheAnimations$isGui && !ornitheAnimations$isHeld && !ornitheAnimations$model.isGui3d()) {
 			args.setAll(args.get(0), args.get(2), args.get(1));
 		}
@@ -97,7 +92,7 @@ public abstract class ItemRendererMixin {
 	private List<BakedQuad> overflowAnimations$changeToSprite(List<BakedQuad> quads, @Local(argsOnly = true) BakedModel model) {
 		if (ornitheAnimations$isGui && !model.isGui3d()) {
 			return quads.stream().filter(baked -> baked.getFace() == Direction.SOUTH).collect(Collectors.toList());
-		} else if (OrnitheAnimations.config.getFAST_ITEMS().get() && !ornitheAnimations$isGui && !ornitheAnimations$isHeld && !model.isGui3d()) {
+		} else if (!ornitheAnimations$isGui && !ornitheAnimations$isHeld) {
 			return quads.stream().filter(baked -> baked.getFace() == Direction.SOUTH).collect(Collectors.toList());
 		}
 		return quads;
@@ -111,7 +106,7 @@ public abstract class ItemRendererMixin {
 		)
     )
     public BakedModel ornitheAnimations$replaceModel(BakedModel model) {
-		return OrnitheAnimations.config.getBETTER_GLINT().get() ? GlintModel.getModel(model) : model;
+		return GlintModel.getModel(model);
     }
 
 	@ModifyArg(
@@ -123,7 +118,7 @@ public abstract class ItemRendererMixin {
 		index = 1
 	)
 	public int ornitheAnimations$replaceColor(int color) {
-		return OrnitheAnimations.config.getBETTER_GLINT().get() ? -10407781 : color;
+		return -10407781;
 	}
 
 	@Inject(
@@ -132,8 +127,8 @@ public abstract class ItemRendererMixin {
 		cancellable = true
 	)
 	public void ornitheAnimations$disableDefaultGlint(CallbackInfo ci) {
-		if (OrnitheAnimations.config.getBETTER_GLINT().get() && ornitheAnimations$isGui) ci.cancel();
-		if (OrnitheAnimations.config.getFAST_ITEMS().get() && !ornitheAnimations$isGui && !ornitheAnimations$isHeld) ci.cancel();
+		if (ornitheAnimations$isGui) ci.cancel();
+		if (!ornitheAnimations$isGui && !ornitheAnimations$isHeld) ci.cancel();
 	}
 
 	@ModifyExpressionValue(
@@ -143,7 +138,7 @@ public abstract class ItemRendererMixin {
 			args = "floatValue=8.0F")
 	)
 	public float ornitheAnimations$modifyScale(float original) {
-		return OrnitheAnimations.config.getBETTER_GLINT().get() ? 1.0F / original : original;
+		return 1.0F / original;
 	}
 
 	@Inject(
@@ -188,7 +183,7 @@ public abstract class ItemRendererMixin {
 		)
 	)
 	public void ornitheAnimations$useCustomGlint(ItemStack stack, int x, int y, CallbackInfo ci) {
-		if (OrnitheAnimations.config.getBETTER_GLINT().get() && stack.hasEnchantmentGlint()) {
+		if (stack.hasEnchantmentGlint()) {
 			GlintHandler.renderEnchantmentGlint(textureManager, ENCHANTMENT_GLINT_LOCATION, () -> {
 				prepareGuiItemRender(x, y, false); /* i love kotlin */
 				return Unit.INSTANCE;
