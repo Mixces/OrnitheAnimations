@@ -1,5 +1,6 @@
 package me.mixces.ornitheanimations.mixin;
 
+import me.mixces.ornitheanimations.OrnitheAnimations;
 import net.minecraft.client.entity.living.player.ClientPlayerEntity;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.PlayerRenderer;
@@ -22,7 +23,7 @@ public class EntityRenderDispatcherMixin {
 		cancellable = true
 	)
 	private void ornitheAnimations$defaultToSteve(Entity entity, CallbackInfoReturnable<PlayerRenderer> cir) {
-		if (entity instanceof ClientPlayerEntity) {
+		if (OrnitheAnimations.config.getSIMPLE_SKIN_RENDERING().get() && entity instanceof ClientPlayerEntity) {
 			/* 1.7 doesn't have Alex skins! */
 			/* thank you toggle */
 			cir.setReturnValue(defaultPlayerRenderer);

@@ -1,5 +1,6 @@
 package me.mixces.ornitheanimations.mixin;
 
+import me.mixces.ornitheanimations.OrnitheAnimations;
 import net.minecraft.client.ClientPlayerInteractionManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
@@ -34,6 +35,9 @@ public abstract class ClientPlayerInteractionManagerMixin {
 		cancellable = true
 	)
     private void ornitheAnimations$resetDestroyProgress(BlockPos pos, Direction face, CallbackInfoReturnable<Boolean> cir) {
+		if (!OrnitheAnimations.config.getBLOCK_HITTING().get()) {
+			return;
+		}
         if (minecraft.player.isUsingItem() && minecraft.player.canModifyWorld()) {
             if (miningProgress > 0.0F) {
                 stopMiningBlock();

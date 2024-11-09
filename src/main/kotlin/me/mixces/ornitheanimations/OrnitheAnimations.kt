@@ -1,14 +1,15 @@
 package me.mixces.ornitheanimations
 
+import me.mixces.ornitheanimations.config.Config
+import net.ornithemc.osl.config.api.ConfigManager
 import net.ornithemc.osl.entrypoints.api.ModInitializer
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
 
 object OrnitheAnimations : ModInitializer {
 
-    private var LOGGER: Logger = LogManager.getLogger("Ornithe Animations")
+    lateinit var config: Config
 
     override fun init() {
-        LOGGER.info("Initializing Ornithe Animations!")
+        config = Config
+        ConfigManager.register(Config)
     }
 }

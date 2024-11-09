@@ -1,6 +1,7 @@
 package me.mixces.ornitheanimations.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import me.mixces.ornitheanimations.OrnitheAnimations;
 import net.minecraft.entity.living.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -22,7 +23,7 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin {
 		)
 	)
 	private boolean ornitheAnimations$disableIsSneakingCheck(boolean original) {
-		return false;
+		return !OrnitheAnimations.config.getSMOOTH_SNEAKING().get() && original;
 	}
 
 	@Inject(
@@ -31,6 +32,8 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin {
 		cancellable = true
 	)
 	public void ornitheAnimations$forceReducedDebug(CallbackInfoReturnable<Boolean> cir) {
-		cir.setReturnValue(true);
+		if (OrnitheAnimations.config.getOLD_DEBUG_MENU().get()) {
+			cir.setReturnValue(true);
+		}
 	}
 }

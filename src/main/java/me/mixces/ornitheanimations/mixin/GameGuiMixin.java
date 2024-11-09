@@ -1,5 +1,6 @@
 package me.mixces.ornitheanimations.mixin;
 
+import me.mixces.ornitheanimations.OrnitheAnimations;
 import net.minecraft.client.gui.GameGui;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
@@ -36,6 +37,6 @@ public abstract class GameGuiMixin {
 		index = 2
 	)
 	private int ornitheAnimations$enableFlashingCheck(int par1) {
-		return par1 + (ornitheAnimations$bl.get() ? 1 : 0) * 9;
+		return par1 + (OrnitheAnimations.config.getREMOVE_HEART_FLASHING().get() ? (ornitheAnimations$bl.get() ? 1 : 0) * 9 : 0);
 	}
 }

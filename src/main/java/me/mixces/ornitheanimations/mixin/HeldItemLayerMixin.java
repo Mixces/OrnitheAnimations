@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.expression.Definition;
 import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
+import me.mixces.ornitheanimations.OrnitheAnimations;
 import me.mixces.ornitheanimations.hook.ItemBlacklist;
 import me.mixces.ornitheanimations.util.GlHelper;
 import net.minecraft.client.Minecraft;
@@ -32,7 +33,7 @@ public abstract class HeldItemLayerMixin {
 		index = 0
 	)
 	private Item ornitheAnimations$changeToStick(Item item) {
-		return Items.STICK;
+		return OrnitheAnimations.config.getREPLACE_CAST_ROD().get() ? Items.STICK : item;
 	}
 
 	@Definition(
@@ -56,7 +57,12 @@ public abstract class HeldItemLayerMixin {
 		)
     )
     private void ornitheAnimations$applyHeldItemLayerTransforms(LivingEntity entity, float handSwingAmount, float handSwing, float tickDelta, float age, float headYaw, float headPitch, float scale, CallbackInfo ci, @Local(ordinal = 0, index = 9) ItemStack stack, @Local(ordinal = 0, index = 10) Item item) {
-		if (Minecraft.getInstance().getItemRenderer().isGui3d(stack) || ItemBlacklist.isPresent(stack)) return;
+		if (!OrnitheAnimations.config.getOLD_ITEM_POSITIONS().get()) {
+			return;
+		}
+		if (Minecraft.getInstance().getItemRenderer().isGui3d(stack) || ItemBlacklist.isPresent(stack)) {
+			return;
+		}
 		GlHelper builder = GlHelper.INSTANCE;
 		float var7;
 		/* original transformations from 1.7 */
@@ -87,6 +93,6 @@ public abstract class HeldItemLayerMixin {
 		index = 2
 	)
 	private ModelTransformations.Type ornitheAnimations$changeTransformType(ModelTransformations.Type transform, @Local ItemStack itemStack) {
-		return !ItemBlacklist.isPresent(itemStack) ? ModelTransformations.Type.NONE : transform;
+		return OrnitheAnimations.config.getOLD_ITEM_POSITIONS().get() && !ItemBlacklist.isPresent(itemStack) ? ModelTransformations.Type.NONE : transform;
 	}
 }

@@ -1,12 +1,14 @@
 package me.mixces.ornitheanimations.mixin;
 
+import me.mixces.ornitheanimations.OrnitheAnimations;
 import net.minecraft.client.gui.widget.ListWidget;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(ListWidget.class)
 public abstract class ListWidgetMixin {
@@ -27,30 +29,40 @@ public abstract class ListWidgetMixin {
 		cancellable = true
 	)
 	private void ornitheAnimations$allowNonNegativeScrolling(CallbackInfo ci) {
+		if (!OrnitheAnimations.config.getCENTER_GUI_SELECTION().get()) {
+			return;
+		}
+
 		ci.cancel();
 		int var1 = getMaxScroll();
 
-		if (var1 < 0)
+		if (var1 < 0) {
 			var1 /= 2;
+		}
 
-		if (!centerAlongY && var1 < 0)
+		if (!centerAlongY && var1 < 0) {
 			var1 = 0;
+		}
 
-		if (scrollAmount < 0.0F)
+		if (scrollAmount < 0.0F) {
 			scrollAmount = 0.0F;
+		}
 
-		if (scrollAmount > (float)var1)
-			scrollAmount = (float)var1;
+		if (scrollAmount > (float) var1) {
+			scrollAmount = (float) var1;
+		}
 	}
 
-	@Redirect(
+	@ModifyArgs(
 		method = "getMaxScroll",
 		at = @At(
 			value = "INVOKE",
 			target = "Ljava/lang/Math;max(II)I"
 		)
 	)
-	private int ornitheAnimations$removeNonNegativeRestriction(int a, int b) {
-		return b;
+	private void ornitheAnimations$removeNonNegativeRestriction(Args args) {
+		if (OrnitheAnimations.config.getCENTER_GUI_SELECTION().get()) {
+			args.set(0, args.get(1));
+		}
 	}
 }

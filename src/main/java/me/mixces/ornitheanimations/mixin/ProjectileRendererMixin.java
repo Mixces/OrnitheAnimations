@@ -1,5 +1,6 @@
 package me.mixces.ornitheanimations.mixin;
 
+import me.mixces.ornitheanimations.OrnitheAnimations;
 import me.mixces.ornitheanimations.util.GlHelper;
 import net.minecraft.client.render.entity.ProjectileRenderer;
 import net.minecraft.entity.Entity;
@@ -22,7 +23,7 @@ public abstract class ProjectileRendererMixin {
 		index = 0
     )
     private float ornitheAnimations$rotateProjectile(float angle) {
-        return angle + 180.0F;
+        return angle + (OrnitheAnimations.config.getMIRRORED_PROJECTILES().get() ? 180.0F : 0.0F);
     }
 
     @ModifyArg(
@@ -35,7 +36,7 @@ public abstract class ProjectileRendererMixin {
             index = 0
     )
     private float ornitheAnimations$useProperCameraView(float angle) {
-        return -angle;
+        return angle * (OrnitheAnimations.config.getMIRRORED_PROJECTILES().get() ? -1 : 1);
     }
 
 	@Inject(
@@ -46,6 +47,8 @@ public abstract class ProjectileRendererMixin {
 		)
 	)
 	private void ornitheAnimations$applyProjectilePosition(Entity entity, double x, double y, double z, float entityYaw, float partialTicks, CallbackInfo ci) {
-		GlHelper.INSTANCE.translate(0.0F, 0.25F, 0.0625F);
+		if (OrnitheAnimations.config.getMIRRORED_PROJECTILES().get()) {
+			GlHelper.INSTANCE.translate(0.0F, 0.25F, 0.0625F);
+		}
 	}
 }

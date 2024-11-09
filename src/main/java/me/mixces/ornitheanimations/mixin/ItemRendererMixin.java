@@ -3,8 +3,10 @@ package me.mixces.ornitheanimations.mixin;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import kotlin.Unit;
+import me.mixces.ornitheanimations.OrnitheAnimations;
 import me.mixces.ornitheanimations.handler.GlintHandler;
 import me.mixces.ornitheanimations.hook.GlintModel;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.block.ModelTransformations;
 import net.minecraft.client.render.texture.TextureManager;
@@ -22,16 +24,15 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Mixin(ItemRenderer.class)
 public abstract class ItemRendererMixin {
-
-	@Shadow
-	public float zOffset;
 
 	@Shadow
 	@Final
@@ -50,6 +51,42 @@ public abstract class ItemRendererMixin {
 	@Unique
 	private boolean ornitheAnimations$isHeld;
 
+	@Unique
+	private BakedModel ornitheAnimations$model = null;
+
+	@Inject(
+		method = "renderItem",
+		at = @At("HEAD")
+	)
+	private void ornitheAnimations$captureModel(ItemStack stack, BakedModel model, CallbackInfo ci) {
+		ornitheAnimations$model = model;
+	}
+
+	@Inject(
+		method = "renderItem",
+		at = @At("TAIL")
+	)
+	private void ornitheAnimations$clearModel(CallbackInfo ci) {
+		/* we need to clear this field */
+		ornitheAnimations$model = null;
+	}
+
+	@ModifyArgs(
+		method = "applyNormal",
+		at = @At(
+			value = "INVOKE",
+			target = "Lcom/mojang/blaze3d/vertex/BufferBuilder;postNormal(FFF)V"
+		)
+	)
+	private void ornitheAnimations$modifyNormals(Args args) {
+		if (!OrnitheAnimations.config.getFAST_ITEMS().get()) {
+			return;
+		}
+		if (!ornitheAnimations$isGui && !ornitheAnimations$isHeld && !ornitheAnimations$model.isGui3d()) {
+			args.setAll(args.get(0), args.get(2), args.get(1));
+		}
+	}
+
 	@ModifyExpressionValue(
 		method = "render(Lnet/minecraft/client/resource/model/BakedModel;ILnet/minecraft/item/ItemStack;)V",
 		at = @At(
@@ -60,7 +97,7 @@ public abstract class ItemRendererMixin {
 	private List<BakedQuad> overflowAnimations$changeToSprite(List<BakedQuad> quads, @Local(argsOnly = true) BakedModel model) {
 		if (ornitheAnimations$isGui && !model.isGui3d()) {
 			return quads.stream().filter(baked -> baked.getFace() == Direction.SOUTH).collect(Collectors.toList());
-		} else if (!ornitheAnimations$isGui && !ornitheAnimations$isHeld) {
+		} else if (OrnitheAnimations.config.getFAST_ITEMS().get() && !ornitheAnimations$isGui && !ornitheAnimations$isHeld && !model.isGui3d()) {
 			return quads.stream().filter(baked -> baked.getFace() == Direction.SOUTH).collect(Collectors.toList());
 		}
 		return quads;
@@ -74,7 +111,7 @@ public abstract class ItemRendererMixin {
 		)
     )
     public BakedModel ornitheAnimations$replaceModel(BakedModel model) {
-		return GlintModel.getModel(model);
+		return OrnitheAnimations.config.getBETTER_GLINT().get() ? GlintModel.getModel(model) : model;
     }
 
 	@ModifyArg(
@@ -86,7 +123,7 @@ public abstract class ItemRendererMixin {
 		index = 1
 	)
 	public int ornitheAnimations$replaceColor(int color) {
-		return -10407781;
+		return OrnitheAnimations.config.getBETTER_GLINT().get() ? -10407781 : color;
 	}
 
 	@Inject(
@@ -95,8 +132,8 @@ public abstract class ItemRendererMixin {
 		cancellable = true
 	)
 	public void ornitheAnimations$disableDefaultGlint(CallbackInfo ci) {
-		if (ornitheAnimations$isGui) ci.cancel();
-		if (!ornitheAnimations$isGui && !ornitheAnimations$isHeld) ci.cancel();
+		if (OrnitheAnimations.config.getBETTER_GLINT().get() && ornitheAnimations$isGui) ci.cancel();
+		if (OrnitheAnimations.config.getFAST_ITEMS().get() && !ornitheAnimations$isGui && !ornitheAnimations$isHeld) ci.cancel();
 	}
 
 	@ModifyExpressionValue(
@@ -106,7 +143,7 @@ public abstract class ItemRendererMixin {
 			args = "floatValue=8.0F")
 	)
 	public float ornitheAnimations$modifyScale(float original) {
-		return 1.0F / original;
+		return OrnitheAnimations.config.getBETTER_GLINT().get() ? 1.0F / original : original;
 	}
 
 	@Inject(
@@ -151,7 +188,7 @@ public abstract class ItemRendererMixin {
 		)
 	)
 	public void ornitheAnimations$useCustomGlint(ItemStack stack, int x, int y, CallbackInfo ci) {
-		if (stack.hasEnchantmentGlint()) {
+		if (OrnitheAnimations.config.getBETTER_GLINT().get() && stack.hasEnchantmentGlint()) {
 			GlintHandler.renderEnchantmentGlint(textureManager, ENCHANTMENT_GLINT_LOCATION, () -> {
 				prepareGuiItemRender(x, y, false); /* i love kotlin */
 				return Unit.INSTANCE;

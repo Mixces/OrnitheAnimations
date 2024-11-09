@@ -1,5 +1,6 @@
 package me.mixces.ornitheanimations.mixin;
 
+import me.mixces.ornitheanimations.OrnitheAnimations;
 import net.minecraft.entity.Entity;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,7 +29,9 @@ public abstract class EntityMixin {
 		)
     )
     private void ornitheAnimations$smoothenYSize(double x, double y, double z, CallbackInfo ci) {
-		ornitheAnimations$ySize *= 0.4F;
+		if (OrnitheAnimations.config.getSMOOTH_SNEAKING().get()) {
+			ornitheAnimations$ySize *= 0.4F;
+		}
     }
 
     @Inject(
@@ -41,6 +44,8 @@ public abstract class EntityMixin {
 		)
     )
     private void ornitheAnimations$reAssignY(CallbackInfo ci) {
-		y -= ornitheAnimations$ySize;
+		if (OrnitheAnimations.config.getSMOOTH_SNEAKING().get()) {
+			y -= ornitheAnimations$ySize;
+		}
     }
 }

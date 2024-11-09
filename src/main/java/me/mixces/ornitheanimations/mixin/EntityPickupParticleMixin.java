@@ -2,6 +2,7 @@ package me.mixces.ornitheanimations.mixin;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import me.mixces.ornitheanimations.OrnitheAnimations;
 import me.mixces.ornitheanimations.util.GlHelper;
 import net.minecraft.client.entity.particle.EntityPickupParticle;
 import net.minecraft.entity.Entity;
@@ -21,8 +22,10 @@ public abstract class EntityPickupParticleMixin {
 		)
 	)
 	private void ornitheAnimations$pushPosition(BufferBuilder bufferBuilder, Entity camera, float tickDelta, float dx, float dy, float dz, float forwards, float sideways, CallbackInfo ci) {
-		GlStateManager.pushMatrix();
-		GlHelper.INSTANCE.translate(0.0F, 0.5F, 0.0F);
+		if (OrnitheAnimations.config.getBETTER_ITEM_PICKUP().get()) {
+			GlStateManager.pushMatrix();
+			GlHelper.INSTANCE.translate(0.0F, 0.5F, 0.0F);
+		}
 	}
 
 	@Inject(
@@ -34,6 +37,8 @@ public abstract class EntityPickupParticleMixin {
 		)
 	)
 	private void ornitheAnimations$popPosition(BufferBuilder bufferBuilder, Entity camera, float tickDelta, float dx, float dy, float dz, float forwards, float sideways, CallbackInfo ci) {
-		GlStateManager.popMatrix();
+		if (OrnitheAnimations.config.getBETTER_ITEM_PICKUP().get()) {
+			GlStateManager.popMatrix();
+		}
 	}
 }

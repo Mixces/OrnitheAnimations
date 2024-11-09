@@ -1,6 +1,8 @@
 package me.mixces.ornitheanimations.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import me.mixces.ornitheanimations.OrnitheAnimations;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.ItemEntityRenderer;
@@ -26,7 +28,7 @@ public abstract class ItemEntityRendererMixin extends EntityRenderer<ItemEntity>
 		index = 0
 	)
 	private float ornitheAnimations$itemFacePlayer(float angle, @Local boolean bl) {
-		if (!bl) {
+		if (OrnitheAnimations.config.getFAST_ITEMS().get() && !bl) {
 			return 180.0F - dispatcher.cameraYaw;
 		}
 		return angle;
@@ -41,6 +43,6 @@ public abstract class ItemEntityRendererMixin extends EntityRenderer<ItemEntity>
 		)
 	)
 	private ModelTransformations.Type ornitheAnimations$replaceTransform(ModelTransformations.Type type) {
-		return ModelTransformations.Type.GUI;
+		return OrnitheAnimations.config.getFAST_ITEMS().get() ? ModelTransformations.Type.GUI : type;
 	}
 }

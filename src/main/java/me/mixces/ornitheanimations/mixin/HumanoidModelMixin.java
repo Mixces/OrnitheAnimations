@@ -1,5 +1,6 @@
 package me.mixces.ornitheanimations.mixin;
 
+import me.mixces.ornitheanimations.OrnitheAnimations;
 import net.minecraft.client.render.model.ModelPart;
 import net.minecraft.client.render.model.entity.HumanoidModel;
 import net.minecraft.entity.Entity;
@@ -41,6 +42,8 @@ public abstract class HumanoidModelMixin {
 		)
     )
     private void ornitheAnimations$reAssignArmPosition(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn, CallbackInfo ci) {
-		rightArm.rotationY = 0.0f;
+		if (OrnitheAnimations.config.getOLD_ITEM_POSITIONS().get()) {
+			rightArm.rotationY = 0.0f;
+		}
     }
 }

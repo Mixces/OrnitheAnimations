@@ -1,11 +1,14 @@
 package me.mixces.ornitheanimations.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import me.mixces.ornitheanimations.OrnitheAnimations;
 import me.mixces.ornitheanimations.hook.DamageTint;
 import me.mixces.ornitheanimations.shared.IDamageTint;
 import me.mixces.ornitheanimations.util.GlHelper;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.entity.living.LivingEntity;
 import net.minecraft.entity.living.player.PlayerEntity;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -53,7 +56,10 @@ public abstract class LivingEntityRendererMixin implements IDamageTint {
 		)
     )
     private void ornitheAnimations$addSneakingTranslation(LivingEntity entity, double x, double y, double z, float entityYaw, float partialTicks, CallbackInfo ci) {
-        if (entity instanceof PlayerEntity && entity.isSneaking()) {
+        if (!OrnitheAnimations.config.getSMOOTH_SNEAKING().get()) {
+			return;
+		}
+		if (entity instanceof PlayerEntity && entity.isSneaking()) {
 			GlHelper.INSTANCE.translate(0.0F, -0.2F, 0.0F);
         }
     }
@@ -68,6 +74,11 @@ public abstract class LivingEntityRendererMixin implements IDamageTint {
 	)
 	private void ornitheAnimations$cancelDamageBrightness(LivingEntityRenderer<LivingEntity> instance, LivingEntity entity, float handSwing, float handSwingAmount, float age, float yaw, float pitch, float scale) {
 		renderHand(entity, handSwing, handSwingAmount, age, yaw, pitch, scale);
+
+		if (!OrnitheAnimations.config.getALTERNATIVE_DAMAGE_TINT().get()) {
+			return;
+		}
+
 		if (setupOverlayColor(entity, ornitheAnimations$h.get())) {
 			renderHand(entity, handSwing, handSwingAmount, age, yaw, pitch, scale);
 			DamageTint.unsetDamageTint();
@@ -83,33 +94,33 @@ public abstract class LivingEntityRendererMixin implements IDamageTint {
 		ornitheAnimations$h.remove();
 	}
 
-	@Redirect(
+	@ModifyExpressionValue(
 		method = "render(Lnet/minecraft/entity/living/LivingEntity;DDDFF)V",
 		at = @At(
 			value = "INVOKE",
 			target = "Lnet/minecraft/client/render/entity/LivingEntityRenderer;setupOverlayColor(Lnet/minecraft/entity/living/LivingEntity;F)Z"
 		)
 	)
-	private boolean ornitheAnimations$cancelDamageBrightness(LivingEntityRenderer<LivingEntity> instance, LivingEntity entity, float tickDelta) {
+	private boolean ornitheAnimations$cancelDamageBrightness(boolean original) {
 		/* cancel model damage tint */
-		return false;
+		return !OrnitheAnimations.config.getALTERNATIVE_DAMAGE_TINT().get() && original;
 	}
 
-	@Redirect(
+	@ModifyExpressionValue(
 		method = "renderLayers",
 		at = @At(
 			value = "INVOKE",
 			target = "Lnet/minecraft/client/render/entity/LivingEntityRenderer;setupOverlayColor(Lnet/minecraft/entity/living/LivingEntity;FZ)Z"
 		)
 	)
-	private boolean ornitheAnimations$cancelDamageBrightness2(LivingEntityRenderer<LivingEntity> instance, LivingEntity entity, float tickDelta, boolean bl) {
+	private boolean ornitheAnimations$cancelDamageBrightness2(boolean original) {
 		/* cancel layer damage tint */
-		return false;
+		return !OrnitheAnimations.config.getALTERNATIVE_DAMAGE_TINT().get() && original;
 	}
 
 	@SuppressWarnings("AddedMixinMembersNamePattern")
 	@Override
-	public boolean setupOverlayColor(LivingEntity livingEntity, float partialTicks) {
+	public boolean setupOverlayColor(@NotNull LivingEntity livingEntity, float partialTicks) {
 		/* trick to ensure the brightnessBuffer is updated*/
 		if (setupOverlayColor(livingEntity, partialTicks, true)) tearDownOverlayColor();
 		/* if there are any performance issues, blame this */

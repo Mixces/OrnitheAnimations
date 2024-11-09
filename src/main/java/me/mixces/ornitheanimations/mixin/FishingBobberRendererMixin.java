@@ -1,6 +1,7 @@
 package me.mixces.ornitheanimations.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import me.mixces.ornitheanimations.OrnitheAnimations;
 import net.minecraft.client.render.entity.FishingBobberRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
@@ -17,9 +18,11 @@ public class FishingBobberRendererMixin {
 		)
 	)
 	private void ornitheAnimations$modifyLinePosition(Args args) {
+		if (OrnitheAnimations.config.getOLD_ITEM_POSITIONS().get()) {
 		/* original values from 1.7 */
 		args.set(0, -0.5D);
 		args.set(2, 0.8D);
+		}
 	}
 
 	@ModifyExpressionValue(
@@ -31,7 +34,7 @@ public class FishingBobberRendererMixin {
 	)
 	public double ornitheAnimations$moveLinePosition(double constant) {
 		/* original values from 1.7 */
-		return constant + 0.05D;
+		return constant + (OrnitheAnimations.config.getOLD_ITEM_POSITIONS().get() ? 0.05D : 0.0D);
 	}
 
 	@ModifyExpressionValue(
@@ -42,6 +45,6 @@ public class FishingBobberRendererMixin {
 		)
 	)
 	public boolean ornitheAnimations$removeSneakTranslation(boolean original) {
-		return false;
+		return !OrnitheAnimations.config.getOLD_ITEM_POSITIONS().get() && original;
 	}
 }

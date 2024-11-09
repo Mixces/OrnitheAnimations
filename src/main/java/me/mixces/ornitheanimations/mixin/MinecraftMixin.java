@@ -1,6 +1,7 @@
 package me.mixces.ornitheanimations.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import me.mixces.ornitheanimations.OrnitheAnimations;
 import me.mixces.ornitheanimations.shared.ISwing;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.living.player.LocalClientPlayerEntity;
@@ -27,7 +28,7 @@ public abstract class MinecraftMixin {
 		)
 	)
 	private boolean ornitheAnimations$disableUsingItemCheck(boolean original) {
-		return false;
+		return !OrnitheAnimations.config.getBLOCK_HITTING().get() && original;
 	}
 
 	@ModifyExpressionValue(
@@ -38,15 +39,20 @@ public abstract class MinecraftMixin {
 		)
 	)
 	private boolean ornitheAnimations$disableIsHittingCheck(boolean original) {
-		return false;
+		return !OrnitheAnimations.config.getBLOCK_HITTING().get() && original;
 	}
 
 	@Inject(
 		method = "doAttack",
-		at = @At("TAIL")
+		at = @At(
+			value = "RETURN",
+			ordinal = 0
+		)
 	)
 	private void ornitheAnimations$addLeftClickCheck(CallbackInfo ci) {
-		/* fake swing during miss penalty to appear like 1.7 */
-		if (attackCooldown > 0) ((ISwing) player).fakeSwingItem();
+		if (OrnitheAnimations.config.getHIDE_MISS_PENALTY().get()) {
+			/* fake swing during miss penalty to appear like 1.7 */
+			((ISwing) player).fakeSwingItem();
+		}
 	}
 }
