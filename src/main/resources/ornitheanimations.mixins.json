@@ -1,0 +1,44 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "minMixinExtrasVersion": "0.5.0-beta.1",
+  "package": "me.mixces.ornitheanimations.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+    "ClientPlayerInteractionManagerMixin",
+    "ClientPlayNetworkHandlerMixin",
+    "DebugOverlayMixin",
+    "EntityMixin",
+    "EntityPickupParticleMixin",
+    "EntityRenderDispatcherMixin",
+    "FishingBobberRendererMixin",
+    "GameGuiMixin",
+    "HeldItemLayerMixin",
+    "HeldItemRendererMixin",
+    "HumanoidModelMixin",
+    "ItemEntityRendererMixin",
+    "ItemRendererMixin",
+    "ListWidgetMixin",
+    "LivingEntityMixin",
+    "LivingEntityRendererMixin",
+    "LocalClientPlayerEntityMixin",
+    "MinecraftMixin",
+    "PlayerEntityMixin",
+    "PlayerRendererMixin",
+    "PlayerTabOverlayMixin",
+    "ProjectileRendererMixin",
+    "damagelayers.AbstractArmorLayerMixin",
+    "damagelayers.EnderDragonEyesLayerMixin",
+    "damagelayers.EndermanEyesLayerMixin",
+    "damagelayers.PigSaddleLayerMixin",
+    "damagelayers.SheepFurLayerMixin",
+    "damagelayers.SlimeOuterLayerMixin",
+    "damagelayers.SpiderEyesLayerMixin",
+    "damagelayers.WolfCollarLayerMixin"
+  ],
+  "server": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

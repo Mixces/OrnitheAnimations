@@ -2,6 +2,7 @@ plugins {
 	id 'maven-publish'
 	id 'fabric-loom' version '1.6-SNAPSHOT'
 	id 'ploceus' version '1.6-SNAPSHOT'
+	id 'org.jetbrains.kotlin.jvm' version '2.0.21'
 }
 
 base {
@@ -30,6 +31,8 @@ dependencies {
 
 	// I want to use @Expressions :p
 	include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:$project.mixinextras_version")))
+
+	modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_language_kotlin_version}"
 }
 
 processResources {
@@ -42,7 +45,7 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
 	it.options.encoding = 'UTF-8'
-	it.options.release = 8
+	it.options.release = 21
 }
 
 java {
