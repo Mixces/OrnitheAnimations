@@ -1,5 +1,6 @@
 package me.mixces.ornitheanimations.mixin.damagelayers;
 
+import me.mixces.ornitheanimations.OrnitheAnimations;
 import me.mixces.ornitheanimations.hook.DamageTint;
 import me.mixces.ornitheanimations.shared.IDamageTint;
 import net.minecraft.client.render.entity.PigRenderer;
@@ -34,6 +35,9 @@ public abstract class PigSaddleLayerMixin {
     )
     public void ornitheAnimations$addDamageBrightness(PigEntity pigEntity, float f, float g, float h, float i, float j, float k, float l, CallbackInfo ci) {
 		/* colors the entity's layer red just like 1.7 */
+		if (!OrnitheAnimations.config.getALTERNATIVE_DAMAGE_TINT().get()) {
+			return;
+		}
 		if (((IDamageTint) parent).setupOverlayColor(pigEntity, h)) {
 			model.render(pigEntity, f, g, i, j, k, l);
 			DamageTint.unsetDamageTint();

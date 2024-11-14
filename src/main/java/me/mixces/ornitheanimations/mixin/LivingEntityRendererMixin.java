@@ -1,6 +1,5 @@
 package me.mixces.ornitheanimations.mixin;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import me.mixces.ornitheanimations.OrnitheAnimations;
 import me.mixces.ornitheanimations.hook.DamageTint;
 import me.mixces.ornitheanimations.shared.IDamageTint;
@@ -94,28 +93,34 @@ public abstract class LivingEntityRendererMixin implements IDamageTint {
 		ornitheAnimations$h.remove();
 	}
 
-	@ModifyExpressionValue(
+	@Redirect(
 		method = "render(Lnet/minecraft/entity/living/LivingEntity;DDDFF)V",
 		at = @At(
 			value = "INVOKE",
 			target = "Lnet/minecraft/client/render/entity/LivingEntityRenderer;setupOverlayColor(Lnet/minecraft/entity/living/LivingEntity;F)Z"
 		)
 	)
-	private boolean ornitheAnimations$cancelDamageBrightness(boolean original) {
+	private boolean ornitheAnimations$cancelDamageBrightness(LivingEntityRenderer<LivingEntity> instance, LivingEntity entity, float tickDelta) {
 		/* cancel model damage tint */
-		return !OrnitheAnimations.config.getALTERNATIVE_DAMAGE_TINT().get() && original;
+		if (OrnitheAnimations.config.getALTERNATIVE_DAMAGE_TINT().get()) {
+			return false;
+		}
+		return setupOverlayColor(entity, tickDelta);
 	}
 
-	@ModifyExpressionValue(
+	@Redirect(
 		method = "renderLayers",
 		at = @At(
 			value = "INVOKE",
 			target = "Lnet/minecraft/client/render/entity/LivingEntityRenderer;setupOverlayColor(Lnet/minecraft/entity/living/LivingEntity;FZ)Z"
 		)
 	)
-	private boolean ornitheAnimations$cancelDamageBrightness2(boolean original) {
+	private boolean ornitheAnimations$cancelDamageBrightness2(LivingEntityRenderer<LivingEntity> instance, LivingEntity entity, float tickDelta, boolean bl) {
 		/* cancel layer damage tint */
-		return !OrnitheAnimations.config.getALTERNATIVE_DAMAGE_TINT().get() && original;
+		if (OrnitheAnimations.config.getALTERNATIVE_DAMAGE_TINT().get()) {
+			return false;
+		}
+		return setupOverlayColor(entity, tickDelta, bl);
 	}
 
 	@SuppressWarnings("AddedMixinMembersNamePattern")

@@ -1,5 +1,6 @@
 package me.mixces.ornitheanimations.mixin.damagelayers;
 
+import me.mixces.ornitheanimations.OrnitheAnimations;
 import me.mixces.ornitheanimations.hook.DamageTint;
 import me.mixces.ornitheanimations.shared.IDamageTint;
 import net.minecraft.client.render.entity.SheepRenderer;
@@ -34,6 +35,9 @@ public abstract class SheepFurLayerMixin {
     )
     public void ornitheAnimations$addDamageBrightness(SheepEntity sheepEntity, float f, float g, float h, float i, float j, float k, float l, CallbackInfo ci) {
 		/* colors the entity's layer red just like 1.7 */
+		if (!OrnitheAnimations.config.getALTERNATIVE_DAMAGE_TINT().get()) {
+			return;
+		}
 		if (((IDamageTint) parent).setupOverlayColor(sheepEntity, h)) {
 			model.render(sheepEntity, f, g, i, j, k, l);
 			DamageTint.unsetDamageTint();
