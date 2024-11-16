@@ -23,7 +23,7 @@ public class EntityRenderDispatcherMixin {
 		cancellable = true
 	)
 	private void ornitheAnimations$defaultToSteve(Entity entity, CallbackInfoReturnable<PlayerRenderer> cir) {
-		if (OrnitheAnimations.config.getSIMPLE_SKIN_RENDERING().get() && entity instanceof ClientPlayerEntity) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getSIMPLE_SKIN_RENDERING().get() && entity instanceof ClientPlayerEntity) {
 			/* 1.7 doesn't have Alex skins! */
 			/* thank you toggle */
 			cir.setReturnValue(defaultPlayerRenderer);

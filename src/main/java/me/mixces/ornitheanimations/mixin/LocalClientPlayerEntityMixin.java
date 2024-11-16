@@ -27,7 +27,7 @@ public abstract class LocalClientPlayerEntityMixin extends PlayerEntityMixin imp
 		)
     )
     private void ornitheAnimations$sneakYSize(CallbackInfo ci) {
-		if (!OrnitheAnimations.config.getSMOOTH_SNEAKING().get()) {
+		if (!OrnitheAnimations.INSTANCE.getConfig().getSMOOTH_SNEAKING().get()) {
 			return;
 		}
         if (input.sneaking && ornitheAnimations$ySize < 0.2F) {
@@ -37,7 +37,7 @@ public abstract class LocalClientPlayerEntityMixin extends PlayerEntityMixin imp
 
     @WrapMethod(method = "swingHand")
     private void ornitheAnimations$useFakeSwing(Operation<Void> original) {
-        if (OrnitheAnimations.config.getBLOCK_HITTING().get() && isUsingItem()) {
+        if (OrnitheAnimations.INSTANCE.getConfig().getBLOCK_HITTING().get() && isUsingItem()) {
             fakeSwingItem();
         } else {
 			original.call();

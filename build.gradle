@@ -33,6 +33,7 @@ dependencies {
 	include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:$project.mixinextras_version")))
 
 	modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_language_kotlin_version}"
+	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 }
 
 processResources {

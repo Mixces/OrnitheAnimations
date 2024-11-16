@@ -29,7 +29,7 @@ public abstract class EntityMixin {
 		)
     )
     private void ornitheAnimations$smoothenYSize(double x, double y, double z, CallbackInfo ci) {
-		if (OrnitheAnimations.config.getSMOOTH_SNEAKING().get()) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getSMOOTH_SNEAKING().get()) {
 			ornitheAnimations$ySize *= 0.4F;
 		}
     }
@@ -44,7 +44,7 @@ public abstract class EntityMixin {
 		)
     )
     private void ornitheAnimations$reAssignY(CallbackInfo ci) {
-		if (OrnitheAnimations.config.getSMOOTH_SNEAKING().get()) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getSMOOTH_SNEAKING().get()) {
 			y -= ornitheAnimations$ySize;
 		}
     }

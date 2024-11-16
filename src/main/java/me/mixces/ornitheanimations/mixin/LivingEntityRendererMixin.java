@@ -55,7 +55,7 @@ public abstract class LivingEntityRendererMixin implements IDamageTint {
 		)
     )
     private void ornitheAnimations$addSneakingTranslation(LivingEntity entity, double x, double y, double z, float entityYaw, float partialTicks, CallbackInfo ci) {
-        if (!OrnitheAnimations.config.getSMOOTH_SNEAKING().get()) {
+        if (!OrnitheAnimations.INSTANCE.getConfig().getSMOOTH_SNEAKING().get()) {
 			return;
 		}
 		if (entity instanceof PlayerEntity && entity.isSneaking()) {
@@ -74,7 +74,7 @@ public abstract class LivingEntityRendererMixin implements IDamageTint {
 	private void ornitheAnimations$cancelDamageBrightness(LivingEntityRenderer<LivingEntity> instance, LivingEntity entity, float handSwing, float handSwingAmount, float age, float yaw, float pitch, float scale) {
 		renderHand(entity, handSwing, handSwingAmount, age, yaw, pitch, scale);
 
-		if (!OrnitheAnimations.config.getALTERNATIVE_DAMAGE_TINT().get()) {
+		if (!OrnitheAnimations.INSTANCE.getConfig().getALTERNATIVE_DAMAGE_TINT().get()) {
 			return;
 		}
 
@@ -102,7 +102,7 @@ public abstract class LivingEntityRendererMixin implements IDamageTint {
 	)
 	private boolean ornitheAnimations$cancelDamageBrightness(LivingEntityRenderer<LivingEntity> instance, LivingEntity entity, float tickDelta) {
 		/* cancel model damage tint */
-		if (OrnitheAnimations.config.getALTERNATIVE_DAMAGE_TINT().get()) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getALTERNATIVE_DAMAGE_TINT().get()) {
 			return false;
 		}
 		return setupOverlayColor(entity, tickDelta);
@@ -117,7 +117,7 @@ public abstract class LivingEntityRendererMixin implements IDamageTint {
 	)
 	private boolean ornitheAnimations$cancelDamageBrightness2(LivingEntityRenderer<LivingEntity> instance, LivingEntity entity, float tickDelta, boolean bl) {
 		/* cancel layer damage tint */
-		if (OrnitheAnimations.config.getALTERNATIVE_DAMAGE_TINT().get()) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getALTERNATIVE_DAMAGE_TINT().get()) {
 			return false;
 		}
 		return setupOverlayColor(entity, tickDelta, bl);

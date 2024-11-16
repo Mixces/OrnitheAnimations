@@ -64,7 +64,7 @@ public abstract class HeldItemRendererMixin {
 		index = 1
 	)
 	private float ornitheAnimations$useCapture(float swingProgress) {
-		return OrnitheAnimations.config.getBLOCK_HITTING().get() ? ornitheAnimations$g.get() : swingProgress;
+		return OrnitheAnimations.INSTANCE.getConfig().getBLOCK_HITTING().get() ? ornitheAnimations$g.get() : swingProgress;
 	}
 
 	@Inject(
@@ -75,7 +75,7 @@ public abstract class HeldItemRendererMixin {
 		)
 	)
 	private void orintheAnimations$preBowTransform(float tickDelta, ClientPlayerEntity player, CallbackInfo ci) {
-		if (OrnitheAnimations.config.getOLD_ITEM_POSITIONS().get()) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get()) {
 			/* original transformations from 1.7 */
 			GlHelper.INSTANCE.roll(-335.0F).yaw(-50.0F);
 		}
@@ -86,7 +86,7 @@ public abstract class HeldItemRendererMixin {
 		at = @At("TAIL")
 	)
 	private void orintheAnimations$postBowTransform(float tickDelta, ClientPlayerEntity player, CallbackInfo ci) {
-		if (OrnitheAnimations.config.getOLD_ITEM_POSITIONS().get()) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get()) {
 			/* original transformations from 1.7 */
 			GlHelper.INSTANCE.yaw(50.0F).roll(335.0F);
 		}
@@ -100,7 +100,7 @@ public abstract class HeldItemRendererMixin {
 		)
 	)
 	private void ornitheAnimations$applyHeldItemTransforms(LivingEntity entity, ItemStack item, ModelTransformations.Type transform, CallbackInfo ci) {
-		if (!OrnitheAnimations.config.getOLD_ITEM_POSITIONS().get()) {
+		if (!OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get()) {
 			return;
 		}
 		if (renderer.isGui3d(item) || ItemBlacklist.isPresent(item)) {
@@ -121,7 +121,7 @@ public abstract class HeldItemRendererMixin {
 		)
 	)
 	private void ornitheAnimations$applyRodRotation(float tickDelta, CallbackInfo ci) {
-		if (OrnitheAnimations.config.getOLD_ITEM_POSITIONS().get() && item.getItem().shouldRotate()) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get() && item.getItem().shouldRotate()) {
 			GlHelper.INSTANCE.yaw(180.0F);
 		}
 	}
@@ -135,7 +135,7 @@ public abstract class HeldItemRendererMixin {
 		index = 2
 	)
 	private ModelTransformations.Type ornitheAnimations$changeTransformType(ModelTransformations.Type transform) {
-		return OrnitheAnimations.config.getOLD_ITEM_POSITIONS().get() && !ItemBlacklist.isPresent(item) ? ModelTransformations.Type.NONE : transform;
+		return OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get() && !ItemBlacklist.isPresent(item) ? ModelTransformations.Type.NONE : transform;
 	}
 
 	@ModifyExpressionValue(
@@ -146,6 +146,6 @@ public abstract class HeldItemRendererMixin {
 		)
 	)
 	private boolean ornitheAnimations$modifyReEquipBehavior(boolean original) {
-		return original && (!OrnitheAnimations.config.getFULL_REEQUIP_LOGIC().get() || selectedSlot == minecraft.player.inventory.selectedSlot);
+		return original && (!OrnitheAnimations.INSTANCE.getConfig().getFULL_REEQUIP_LOGIC().get() || selectedSlot == minecraft.player.inventory.selectedSlot);
 	}
 }

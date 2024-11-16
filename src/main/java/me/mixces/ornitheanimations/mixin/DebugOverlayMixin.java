@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import me.mixces.ornitheanimations.OrnitheAnimations;
 import me.mixces.ornitheanimations.hook.DebugComponents;
 import net.minecraft.client.gui.overlay.DebugOverlay;
 import net.minecraft.client.render.TextRenderer;
@@ -19,21 +20,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 
 @Mixin(DebugOverlay.class)
-public class DebugOverlayMixin {
+public abstract class DebugOverlayMixin {
 
 	@Shadow
 	@Final
 	private TextRenderer textRenderer;
 
-	@Redirect(
+	@ModifyExpressionValue(
 		method = "drawGameInfo",
 		at = @At(
 			value = "INVOKE",
 			target = "Lnet/minecraft/client/gui/overlay/DebugOverlay;getGameInfo()Ljava/util/List;"
 		)
 	)
-	private List<String> ornitheAnimations$replaceGameInfo(DebugOverlay instance) {
-		return DebugComponents.getLeft();
+	private List<String> ornitheAnimations$replaceGameInfo(List<String> original) {
+		return OrnitheAnimations.INSTANCE.getConfig().getOLD_DEBUG_MENU().get() ? DebugComponents.getLeft() : original;
 	}
 
 	@Inject(
@@ -42,13 +43,15 @@ public class DebugOverlayMixin {
 		remap = false
 	)
 	private void ornitheAnimations$addBottomLeftColumn(CallbackInfo ci) {
-		/* renders the bottom left column of debug text, but in the greyish color just like 1.7 */
-		final int fontHeight = 8;
-		int top = DebugComponents.getLeft().size() * 10 + 4 /* should be 64, just like 1.7 */;
-		for (String msg : DebugComponents.getLeftBottom()) {
-			if (msg == null) continue;
-			textRenderer.draw(msg, 2, top, 14737632, true);
-			top += fontHeight;
+		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_DEBUG_MENU().get()) {
+			/* renders the bottom left column of debug text, but in the greyish color just like 1.7 */
+			final int fontHeight = 8;
+			int top = DebugComponents.getLeft().size() * 10 + 4 /* should be 64, just like 1.7 */;
+			for (String msg : DebugComponents.getLeftBottom()) {
+				if (msg == null) continue;
+				textRenderer.draw(msg, 2, top, 14737632, true);
+				top += fontHeight;
+			}
 		}
 	}
 
@@ -60,7 +63,7 @@ public class DebugOverlayMixin {
 		)
 	)
 	private List<String> ornitheAnimations$replaceSystemInfo(List<String> original) {
-		return DebugComponents.getRight();
+		return OrnitheAnimations.INSTANCE.getConfig().getOLD_DEBUG_MENU().get() ? DebugComponents.getRight() : original;
 	}
 
 	@WrapOperation(
@@ -72,7 +75,7 @@ public class DebugOverlayMixin {
 		)
 	)
 	private int ornitheAnimations$changeFontHeight(TextRenderer instance, Operation<Integer> original) {
-		return 10;
+		return OrnitheAnimations.INSTANCE.getConfig().getOLD_DEBUG_MENU().get() ? 10 : original.call(instance);
 	}
 
 	@WrapWithCondition(
@@ -84,7 +87,7 @@ public class DebugOverlayMixin {
 	)
 	private boolean ornitheAnimations$removeBackgroundRectangle(int left, int top, int right, int bottom, int color) {
 		/* disable rendering the rectangular background, just like 1.7 */
-		return false;
+		return !OrnitheAnimations.INSTANCE.getConfig().getOLD_DEBUG_MENU().get();
 	}
 
 	@WrapOperation(
@@ -96,7 +99,7 @@ public class DebugOverlayMixin {
 	)
 	private int ornitheAnimations$addTextShadow2(TextRenderer instance, String text, int x, int y, int color, Operation<Integer> original) {
 		/* uses the alternative drawString method which allows text shadows, just like in 1.7 */
-		return instance.draw(text, x, y, color, true);
+		return instance.draw(text, x, y, color, OrnitheAnimations.INSTANCE.getConfig().getOLD_DEBUG_MENU().get());
 	}
 
 	@WrapOperation(
@@ -108,6 +111,7 @@ public class DebugOverlayMixin {
 	)
 	private int ornitheAnimations$addTextShadow(TextRenderer instance, String text, int x, int y, int color, Operation<Integer> original) {
 		/* same as above redirect, but the text is white, just like in 1.7 */
-		return instance.draw(text, x, y, 16777215, true);
+		int textColor = OrnitheAnimations.INSTANCE.getConfig().getOLD_DEBUG_MENU().get() ? 16777215 : 0xE0E0E0;
+		return instance.draw(text, x, y, textColor, OrnitheAnimations.INSTANCE.getConfig().getOLD_DEBUG_MENU().get());
 	}
 }

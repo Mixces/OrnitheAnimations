@@ -17,7 +17,7 @@ public class ClientPlayNetworkHandlerMixin {
 		)
 	)
 	private double ornitheAnimations$oldOrbRendering(double original) {
-		return original / (OrnitheAnimations.config.getOLD_XP_ORB_RENDERING().get() ?
+		return original / (OrnitheAnimations.INSTANCE.getConfig().getOLD_XP_ORB_RENDERING().get() ?
 			32.0D : 1.0D /* renders the xp orbs similar to 1.7 by oddly offsetting them */
 		);
 	}

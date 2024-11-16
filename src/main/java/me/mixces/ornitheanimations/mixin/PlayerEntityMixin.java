@@ -23,7 +23,7 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin {
 		)
 	)
 	private boolean ornitheAnimations$disableIsSneakingCheck(boolean original) {
-		return !OrnitheAnimations.config.getSMOOTH_SNEAKING().get() && original;
+		return !OrnitheAnimations.INSTANCE.getConfig().getSMOOTH_SNEAKING().get() && original;
 	}
 
 	@Inject(
@@ -32,7 +32,7 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin {
 		cancellable = true
 	)
 	public void ornitheAnimations$forceReducedDebug(CallbackInfoReturnable<Boolean> cir) {
-		if (OrnitheAnimations.config.getOLD_DEBUG_MENU().get()) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_DEBUG_MENU().get()) {
 			cir.setReturnValue(true);
 		}
 	}

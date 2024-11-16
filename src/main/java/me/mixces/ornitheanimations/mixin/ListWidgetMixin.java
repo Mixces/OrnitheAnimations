@@ -29,7 +29,7 @@ public abstract class ListWidgetMixin {
 		cancellable = true
 	)
 	private void ornitheAnimations$allowNonNegativeScrolling(CallbackInfo ci) {
-		if (!OrnitheAnimations.config.getCENTER_GUI_SELECTION().get()) {
+		if (!OrnitheAnimations.INSTANCE.getConfig().getCENTER_GUI_SELECTION().get()) {
 			return;
 		}
 
@@ -61,7 +61,7 @@ public abstract class ListWidgetMixin {
 		)
 	)
 	private void ornitheAnimations$removeNonNegativeRestriction(Args args) {
-		if (OrnitheAnimations.config.getCENTER_GUI_SELECTION().get()) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getCENTER_GUI_SELECTION().get()) {
 			args.set(0, args.get(1));
 		}
 	}

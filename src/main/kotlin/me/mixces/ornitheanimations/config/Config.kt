@@ -9,6 +9,8 @@ import net.ornithemc.osl.config.api.serdes.SerializerTypes
 
 object Config : BaseConfig() {
 
+    val GROUP_NAME: String = "OrnitheAnimations"
+
     /* Mechanics */
     val BLOCK_HITTING: BooleanOption = BooleanOption("blockHitting", null, true)
     val SMOOTH_SNEAKING: BooleanOption = BooleanOption("smoothSneaking", null, true)
@@ -62,7 +64,7 @@ object Config : BaseConfig() {
 
     override fun init() {
         registerOptions(
-            "OrnitheAnimations",
+            GROUP_NAME,
             BLOCK_HITTING,
             SMOOTH_SNEAKING,
             FULL_REEQUIP_LOGIC,

@@ -35,7 +35,7 @@ public abstract class PigSaddleLayerMixin {
     )
     public void ornitheAnimations$addDamageBrightness(PigEntity pigEntity, float f, float g, float h, float i, float j, float k, float l, CallbackInfo ci) {
 		/* colors the entity's layer red just like 1.7 */
-		if (!OrnitheAnimations.config.getALTERNATIVE_DAMAGE_TINT().get()) {
+		if (!OrnitheAnimations.INSTANCE.getConfig().getALTERNATIVE_DAMAGE_TINT().get()) {
 			return;
 		}
 		if (((IDamageTint) parent).setupOverlayColor(pigEntity, h)) {

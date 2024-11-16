@@ -37,6 +37,6 @@ public abstract class GameGuiMixin {
 		index = 2
 	)
 	private int ornitheAnimations$enableFlashingCheck(int par1) {
-		return par1 + (OrnitheAnimations.config.getREMOVE_HEART_FLASHING().get() ? (ornitheAnimations$bl.get() ? 1 : 0) * 9 : 0);
+		return par1 + (OrnitheAnimations.INSTANCE.getConfig().getREMOVE_HEART_FLASHING().get() ? (ornitheAnimations$bl.get() ? 1 : 0) * 9 : 0);
 	}
 }

@@ -34,7 +34,7 @@ public abstract class AbstractArmorLayerMixin {
     )
     private void ornitheAnimations$addDamageBrightness(LivingEntity entity, float handSwingAmount, float handSwing, float tickDelta, float age, float headYaw, float headPitch, float scale, int equipmentSlot, CallbackInfo ci) {
 		/* colors the armor pieces red just like 1.7 */
-		if (!OrnitheAnimations.config.getALTERNATIVE_DAMAGE_TINT().get()) {
+		if (!OrnitheAnimations.INSTANCE.getConfig().getALTERNATIVE_DAMAGE_TINT().get()) {
 			return;
 		}
 		if (((IDamageTint) parent).setupOverlayColor(entity, tickDelta)) {

@@ -28,7 +28,7 @@ public abstract class MinecraftMixin {
 		)
 	)
 	private boolean ornitheAnimations$disableUsingItemCheck(boolean original) {
-		return !OrnitheAnimations.config.getBLOCK_HITTING().get() && original;
+		return !OrnitheAnimations.INSTANCE.getConfig().getBLOCK_HITTING().get() && original;
 	}
 
 	@ModifyExpressionValue(
@@ -39,7 +39,7 @@ public abstract class MinecraftMixin {
 		)
 	)
 	private boolean ornitheAnimations$disableIsHittingCheck(boolean original) {
-		return !OrnitheAnimations.config.getBLOCK_HITTING().get() && original;
+		return !OrnitheAnimations.INSTANCE.getConfig().getBLOCK_HITTING().get() && original;
 	}
 
 	@Inject(
@@ -50,7 +50,7 @@ public abstract class MinecraftMixin {
 		)
 	)
 	private void ornitheAnimations$addLeftClickCheck(CallbackInfo ci) {
-		if (OrnitheAnimations.config.getHIDE_MISS_PENALTY().get()) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getHIDE_MISS_PENALTY().get()) {
 			/* fake swing during miss penalty to appear like 1.7 */
 			((ISwing) player).fakeSwingItem();
 		}

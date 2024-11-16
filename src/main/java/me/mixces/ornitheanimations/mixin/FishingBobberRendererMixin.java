@@ -18,7 +18,7 @@ public class FishingBobberRendererMixin {
 		)
 	)
 	private void ornitheAnimations$modifyLinePosition(Args args) {
-		if (OrnitheAnimations.config.getOLD_ITEM_POSITIONS().get()) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get()) {
 		/* original values from 1.7 */
 		args.set(0, -0.5D);
 		args.set(2, 0.8D);
@@ -34,7 +34,7 @@ public class FishingBobberRendererMixin {
 	)
 	public double ornitheAnimations$moveLinePosition(double constant) {
 		/* original values from 1.7 */
-		return constant + (OrnitheAnimations.config.getOLD_ITEM_POSITIONS().get() ? 0.05D : 0.0D);
+		return constant + (OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get() ? 0.05D : 0.0D);
 	}
 
 	@ModifyExpressionValue(
@@ -45,6 +45,6 @@ public class FishingBobberRendererMixin {
 		)
 	)
 	public boolean ornitheAnimations$removeSneakTranslation(boolean original) {
-		return !OrnitheAnimations.config.getOLD_ITEM_POSITIONS().get() && original;
+		return !OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get() && original;
 	}
 }

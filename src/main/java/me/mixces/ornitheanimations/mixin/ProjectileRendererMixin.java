@@ -23,7 +23,7 @@ public abstract class ProjectileRendererMixin {
 		index = 0
     )
     private float ornitheAnimations$rotateProjectile(float angle) {
-        return angle + (OrnitheAnimations.config.getMIRRORED_PROJECTILES().get() ? 180.0F : 0.0F);
+        return angle + (OrnitheAnimations.INSTANCE.getConfig().getMIRRORED_PROJECTILES().get() ? 180.0F : 0.0F);
     }
 
     @ModifyArg(
@@ -36,7 +36,7 @@ public abstract class ProjectileRendererMixin {
             index = 0
     )
     private float ornitheAnimations$useProperCameraView(float angle) {
-        return angle * (OrnitheAnimations.config.getMIRRORED_PROJECTILES().get() ? -1 : 1);
+        return angle * (OrnitheAnimations.INSTANCE.getConfig().getMIRRORED_PROJECTILES().get() ? -1 : 1);
     }
 
 	@Inject(
@@ -47,7 +47,7 @@ public abstract class ProjectileRendererMixin {
 		)
 	)
 	private void ornitheAnimations$applyProjectilePosition(Entity entity, double x, double y, double z, float entityYaw, float partialTicks, CallbackInfo ci) {
-		if (OrnitheAnimations.config.getMIRRORED_PROJECTILES().get()) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getMIRRORED_PROJECTILES().get()) {
 			GlHelper.INSTANCE.translate(0.0F, 0.25F, 0.0625F);
 		}
 	}

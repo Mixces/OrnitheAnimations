@@ -20,7 +20,10 @@
         "adapter": "kotlin",
         "value":  "me.mixces.ornitheanimations.OrnitheAnimations"
       }
-		]
+		],
+    "modmenu": [
+      "me.mixces.ornitheanimations.config.ConfigIntegration"
+    ]
 	},
 	"mixins": [
 		"ornitheanimations.mixins.json"

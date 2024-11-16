@@ -6,10 +6,9 @@ import net.ornithemc.osl.entrypoints.api.ModInitializer
 
 object OrnitheAnimations : ModInitializer {
 
-    lateinit var config: Config
+    val config = Config
 
     override fun init() {
-        config = Config
-        ConfigManager.register(Config)
+        ConfigManager.register(config)
     }
 }

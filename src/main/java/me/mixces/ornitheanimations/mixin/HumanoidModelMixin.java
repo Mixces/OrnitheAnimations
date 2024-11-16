@@ -42,7 +42,7 @@ public abstract class HumanoidModelMixin {
 		)
     )
     private void ornitheAnimations$reAssignArmPosition(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn, CallbackInfo ci) {
-		if (OrnitheAnimations.config.getOLD_ITEM_POSITIONS().get()) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get()) {
 			rightArm.rotationY = 0.0f;
 		}
     }

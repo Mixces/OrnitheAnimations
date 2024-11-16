@@ -33,7 +33,7 @@ public abstract class HeldItemLayerMixin {
 		index = 0
 	)
 	private Item ornitheAnimations$changeToStick(Item item) {
-		return OrnitheAnimations.config.getREPLACE_CAST_ROD().get() ? Items.STICK : item;
+		return OrnitheAnimations.INSTANCE.getConfig().getREPLACE_CAST_ROD().get() ? Items.STICK : item;
 	}
 
 	@Definition(
@@ -57,7 +57,7 @@ public abstract class HeldItemLayerMixin {
 		)
     )
     private void ornitheAnimations$applyHeldItemLayerTransforms(LivingEntity entity, float handSwingAmount, float handSwing, float tickDelta, float age, float headYaw, float headPitch, float scale, CallbackInfo ci, @Local(ordinal = 0, index = 9) ItemStack stack, @Local(ordinal = 0, index = 10) Item item) {
-		if (!OrnitheAnimations.config.getOLD_ITEM_POSITIONS().get()) {
+		if (!OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get()) {
 			return;
 		}
 		if (Minecraft.getInstance().getItemRenderer().isGui3d(stack) || ItemBlacklist.isPresent(stack)) {
@@ -93,6 +93,6 @@ public abstract class HeldItemLayerMixin {
 		index = 2
 	)
 	private ModelTransformations.Type ornitheAnimations$changeTransformType(ModelTransformations.Type transform, @Local ItemStack itemStack) {
-		return OrnitheAnimations.config.getOLD_ITEM_POSITIONS().get() && !ItemBlacklist.isPresent(itemStack) ? ModelTransformations.Type.NONE : transform;
+		return OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get() && !ItemBlacklist.isPresent(itemStack) ? ModelTransformations.Type.NONE : transform;
 	}
 }

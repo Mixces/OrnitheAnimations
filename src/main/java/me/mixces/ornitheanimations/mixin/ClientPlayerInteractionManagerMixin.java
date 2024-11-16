@@ -35,7 +35,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
 		cancellable = true
 	)
     private void ornitheAnimations$resetDestroyProgress(BlockPos pos, Direction face, CallbackInfoReturnable<Boolean> cir) {
-		if (!OrnitheAnimations.config.getBLOCK_HITTING().get()) {
+		if (!OrnitheAnimations.INSTANCE.getConfig().getBLOCK_HITTING().get()) {
 			return;
 		}
         if (minecraft.player.isUsingItem() && minecraft.player.canModifyWorld()) {

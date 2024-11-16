@@ -27,7 +27,7 @@ public abstract class PlayerRendererMixin {
 		)
 	)
 	private void ornitheAnimations$reAssignShownLayer(ClientPlayerEntity entity, CallbackInfo ci) {
-		if (OrnitheAnimations.config.getSIMPLE_SKIN_RENDERING().get()) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getSIMPLE_SKIN_RENDERING().get()) {
 			/* 1.7 doesn't have any skin layers except for the headwear */
 			PlayerModel playerModel = getModel();
 			ModelPart[] wearLayers = {

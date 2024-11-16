@@ -22,7 +22,7 @@ public abstract class EntityPickupParticleMixin {
 		)
 	)
 	private void ornitheAnimations$pushPosition(BufferBuilder bufferBuilder, Entity camera, float tickDelta, float dx, float dy, float dz, float forwards, float sideways, CallbackInfo ci) {
-		if (OrnitheAnimations.config.getBETTER_ITEM_PICKUP().get()) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getBETTER_ITEM_PICKUP().get()) {
 			GlStateManager.pushMatrix();
 			GlHelper.INSTANCE.translate(0.0F, 0.5F, 0.0F);
 		}
@@ -37,7 +37,7 @@ public abstract class EntityPickupParticleMixin {
 		)
 	)
 	private void ornitheAnimations$popPosition(BufferBuilder bufferBuilder, Entity camera, float tickDelta, float dx, float dy, float dz, float forwards, float sideways, CallbackInfo ci) {
-		if (OrnitheAnimations.config.getBETTER_ITEM_PICKUP().get()) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getBETTER_ITEM_PICKUP().get()) {
 			GlStateManager.popMatrix();
 		}
 	}

@@ -28,7 +28,7 @@ public abstract class ItemEntityRendererMixin extends EntityRenderer<ItemEntity>
 		index = 0
 	)
 	private float ornitheAnimations$itemFacePlayer(float angle, @Local boolean bl) {
-		if (OrnitheAnimations.config.getFAST_ITEMS().get() && !bl) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getFAST_ITEMS().get() && !bl) {
 			return 180.0F - dispatcher.cameraYaw;
 		}
 		return angle;
@@ -43,6 +43,6 @@ public abstract class ItemEntityRendererMixin extends EntityRenderer<ItemEntity>
 		)
 	)
 	private ModelTransformations.Type ornitheAnimations$replaceTransform(ModelTransformations.Type type) {
-		return OrnitheAnimations.config.getFAST_ITEMS().get() ? ModelTransformations.Type.GUI : type;
+		return OrnitheAnimations.INSTANCE.getConfig().getFAST_ITEMS().get() ? ModelTransformations.Type.GUI : type;
 	}
 }
