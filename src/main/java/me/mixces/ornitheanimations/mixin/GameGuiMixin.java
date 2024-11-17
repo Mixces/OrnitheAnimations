@@ -1,5 +1,6 @@
 package me.mixces.ornitheanimations.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import me.mixces.ornitheanimations.OrnitheAnimations;
 import net.minecraft.client.gui.GameGui;
 import org.spongepowered.asm.mixin.*;
@@ -39,4 +40,17 @@ public abstract class GameGuiMixin {
 	private int ornitheAnimations$enableFlashingCheck(int par1) {
 		return par1 + (OrnitheAnimations.INSTANCE.getConfig().getREMOVE_HEART_FLASHING().get() ? (ornitheAnimations$bl.get() ? 1 : 0) * 9 : 0);
 	}
+
+//	@ModifyExpressionValue(
+//		method = "render",
+//		at = @At(
+//			value = "FIELD",
+//			target = "Lnet/minecraft/client/gui/GameGui;titleTime:I",
+//			ordinal = 0
+//		)
+//	)
+//	private int ornitheAnimations$disableTitles(int original) {
+//		return OrnitheAnimations.INSTANCE.getConfig().getREMOVE_TITLES().get() ? 0 : original;
+//	}
+
 }

@@ -24,6 +24,7 @@ GUI
 - Remove Heart Flashing: Disables the flashing effect on the heart indicator when taking damage.
 - Simple Player List: Streamlines the player list display.
 - Old Debug Menu: Reverts the debug menu to its older design.
+- Remove Titles: Prevents titles from displaying.
 - Center GUI Selection: Centers GUI selection elements.
 
 ## Requires Java 21 and Fabric Language Kotlin!

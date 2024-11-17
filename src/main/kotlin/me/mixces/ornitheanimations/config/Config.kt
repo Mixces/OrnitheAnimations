@@ -32,6 +32,7 @@ object Config : BaseConfig() {
     val REMOVE_HEART_FLASHING: BooleanOption = BooleanOption("removeHeartFlashing", null, true)
     val SIMPLE_PLAYER_LIST: BooleanOption = BooleanOption("simplePlayerList", null, true)
     val OLD_DEBUG_MENU: BooleanOption = BooleanOption("oldDebugMenu", null, true)
+    val REMOVE_TITLES: BooleanOption = BooleanOption("removeTitles", null, true)
     val CENTER_GUI_SELECTION: BooleanOption = BooleanOption("centerGuiSelection", null, true)
 
     override fun getNamespace(): String {
@@ -81,6 +82,7 @@ object Config : BaseConfig() {
             REMOVE_HEART_FLASHING,
             SIMPLE_PLAYER_LIST,
             OLD_DEBUG_MENU,
+            REMOVE_TITLES,
             CENTER_GUI_SELECTION
         )
     }
