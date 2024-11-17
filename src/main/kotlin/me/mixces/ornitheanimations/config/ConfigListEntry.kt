@@ -1,9 +1,8 @@
 package me.mixces.ornitheanimations.config
 
-import net.fabricmc.api.EnvType
-import net.fabricmc.api.Environment
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.widget.*
+import net.minecraft.client.gui.widget.ButtonWidget
+import net.minecraft.client.gui.widget.EntryListWidget
 import net.ornithemc.osl.config.api.config.option.BooleanOption
 import net.ornithemc.osl.config.api.config.option.group.OptionGroup
 
@@ -12,23 +11,16 @@ import net.ornithemc.osl.config.api.config.option.group.OptionGroup
  * @see net.minecraft.client.gui.widget.OptionListWidget
  */
 class ConfigListEntry(
-    minecraft: Minecraft,
-    width: Int,
-    height: Int,
-    minY: Int,
-    maxY: Int,
-    itemHeight: Int,
-    group: OptionGroup
+    minecraft: Minecraft, width: Int, height: Int, minY: Int, maxY: Int, itemHeight: Int, group: OptionGroup
 ) : EntryListWidget(
     minecraft, width, height, minY, maxY, itemHeight
 ) {
 
     private val entries = mutableListOf<Entry>()
+    private val options = group.options.filterIsInstance<BooleanOption>().toMutableList()
 
     init {
         centerAlongY = false
-
-        val options = group.options.filterIsInstance<BooleanOption>().toMutableList()
 
         for (i in options.indices step 2) {
             val option = options[i]
@@ -39,8 +31,11 @@ class ConfigListEntry(
         }
     }
 
-    private fun createWidget(id: Int, x: Int, y: Int, option: BooleanOption?): ButtonWidget {
-        return ButtonWidget(id, x, y, option?.name)
+    private fun createWidget(id: Int, x: Int, y: Int, option: BooleanOption?): ConfigButtonWidget? {
+        if (option == null) {
+            return null
+        }
+        return ConfigButtonWidget(id, x, y, option, optionName(option))
     }
 
     override fun getEntry(index: Int): Entry = entries[index]
@@ -51,13 +46,10 @@ class ConfigListEntry(
 
     override fun getScrollbarPosition(): Int = super.getScrollbarPosition() + 32
 
-    @Environment(EnvType.CLIENT)
-    class Entry(
+    inner class Entry(
         private val left: ButtonWidget?,
         private val right: ButtonWidget?
     ) : EntryListWidget.Entry {
-
-        private val minecraft: Minecraft = Minecraft.getInstance()
 
         override fun render(
             index: Int,
@@ -69,13 +61,13 @@ class ConfigListEntry(
             mouseY: Int,
             hovered: Boolean
         ) {
-            left?.let {
-                it.y = y
-                it.render(minecraft, mouseX, mouseY)
+            left.let {
+                it?.y = y
+                it?.render(minecraft, mouseX, mouseY)
             }
-            right?.let {
-                it.y = y
-                it.render(minecraft, mouseX, mouseY)
+            right.let {
+                it?.y = y
+                it?.render(minecraft, mouseX, mouseY)
             }
         }
 
@@ -87,20 +79,20 @@ class ConfigListEntry(
             entryMouseX: Int,
             entryMouseY: Int
         ): Boolean {
-            left?.let {
-                if (it.isMouseOver(minecraft, mouseX, mouseY)) {
-                    if (it is OptionButtonWidget) {
-                        minecraft.options.setValue(it.option, 1)
-                        it.message = "Hey"
+            left.let {
+                if (it!!.isMouseOver(minecraft, mouseX, mouseY)) {
+                    if (it is ConfigButtonWidget) {
+                        it.getOption().set(!it.getOption().get())
+                        it.message = optionName(it.getOption())
                     }
                     return true
                 }
             }
-            right?.let {
-                if (it.isMouseOver(minecraft, mouseX, mouseY)) {
-                    if (it is OptionButtonWidget) {
-                        minecraft.options.setValue(it.option, 1)
-                        it.message = "Hey"
+            right.let {
+                if (it!!.isMouseOver(minecraft, mouseX, mouseY)) {
+                    if (it is ConfigButtonWidget) {
+                        it.getOption().set(!it.getOption().get())
+                        it.message = optionName(it.getOption())
                     }
                     return true
                 }
@@ -123,5 +115,11 @@ class ConfigListEntry(
         override fun renderOutOfBounds(index: Int, x: Int, y: Int) {
             /* no-op */
         }
+    }
+
+    private fun optionName(option: BooleanOption): String {
+        val readableName = option.name.replace(Regex("([a-z])([A-Z])"), "$1 $2").replaceFirstChar { it.uppercase() }
+        val state = if (option.get()) "ON" else "OFF"
+        return "$readableName: $state"
     }
 }
