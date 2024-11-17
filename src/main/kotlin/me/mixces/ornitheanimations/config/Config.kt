@@ -9,7 +9,7 @@ import net.ornithemc.osl.config.api.serdes.SerializerTypes
 
 object Config : BaseConfig() {
 
-    val GROUP_NAME: String = "OrnitheAnimations"
+    const val GROUP_NAME: String = "OrnitheAnimations"
 
     /* Mechanics */
     val BLOCK_HITTING: BooleanOption = BooleanOption("blockHitting", null, true)

@@ -17,25 +17,19 @@ class ConfigListEntry(
 ) {
 
     private val entries = mutableListOf<Entry>()
-    private val options = group.options.filterIsInstance<BooleanOption>().toMutableList()
 
     init {
         centerAlongY = false
 
-        for (i in options.indices step 2) {
-            val option = options[i]
-            val option2 = if (i < options.size - 1) options[i + 1] else null
-            val buttonWidget = createWidget(i, width / 2 - 155, 0, option)
-            val buttonWidget2 = createWidget(i, width / 2 - 155 + 160, 0, option2)
+        group.options.filterIsInstance<BooleanOption>().chunked(2).forEach { options ->
+            val buttonWidget = options.getOrNull(0)?.let { createWidget(width / 2 - 155, it) }
+            val buttonWidget2 = options.getOrNull(1)?.let { createWidget(width / 2 - 155 + 160, it) }
             entries.add(Entry(buttonWidget, buttonWidget2))
         }
     }
 
-    private fun createWidget(id: Int, x: Int, y: Int, option: BooleanOption?): ConfigButtonWidget? {
-        if (option == null) {
-            return null
-        }
-        return ConfigButtonWidget(id, x, y, option, optionName(option))
+    private fun createWidget(x: Int, option: BooleanOption): ConfigButtonWidget {
+        return ConfigButtonWidget(x, option, option.toReadableName())
     }
 
     override fun getEntry(index: Int): Entry = entries[index]
@@ -52,64 +46,27 @@ class ConfigListEntry(
     ) : EntryListWidget.Entry {
 
         override fun render(
-            index: Int,
-            x: Int,
-            y: Int,
-            width: Int,
-            height: Int,
-            mouseX: Int,
-            mouseY: Int,
-            hovered: Boolean
+            index: Int, x: Int, y: Int, width: Int, height: Int, mouseX: Int, mouseY: Int, hovered: Boolean
         ) {
-            left.let {
-                it?.y = y
-                it?.render(minecraft, mouseX, mouseY)
-            }
-            right.let {
-                it?.y = y
-                it?.render(minecraft, mouseX, mouseY)
+            listOfNotNull(left, right).forEach { button ->
+                button.y = y
+                button.render(minecraft, mouseX, mouseY)
             }
         }
 
         override fun mouseClicked(
-            index: Int,
-            mouseX: Int,
-            mouseY: Int,
-            button: Int,
-            entryMouseX: Int,
-            entryMouseY: Int
+            index: Int, mouseX: Int, mouseY: Int, button: Int, entryMouseX: Int, entryMouseY: Int
         ): Boolean {
-            left.let {
-                if (it!!.isMouseOver(minecraft, mouseX, mouseY)) {
-                    if (it is ConfigButtonWidget) {
-                        it.getOption().set(!it.getOption().get())
-                        it.message = optionName(it.getOption())
-                    }
-                    return true
-                }
+            return listOfNotNull(left, right).any { option ->
+                if (option.isMouseOver(minecraft, mouseX, mouseY) && option is ConfigButtonWidget) {
+                    option.toggleOption()
+                    true
+                } else false
             }
-            right.let {
-                if (it!!.isMouseOver(minecraft, mouseX, mouseY)) {
-                    if (it is ConfigButtonWidget) {
-                        it.getOption().set(!it.getOption().get())
-                        it.message = optionName(it.getOption())
-                    }
-                    return true
-                }
-            }
-            return false
         }
 
-        override fun mouseReleased(
-            index: Int,
-            mouseX: Int,
-            mouseY: Int,
-            button: Int,
-            entryMouseX: Int,
-            entryMouseY: Int
-        ) {
-            left?.mouseReleased(mouseX, mouseY)
-            right?.mouseReleased(mouseX, mouseY)
+        override fun mouseReleased(index: Int, mouseX: Int, mouseY: Int, button: Int, entryMouseX: Int, entryMouseY: Int) {
+            listOfNotNull(left, right).forEach { it.mouseReleased(mouseX, mouseY) }
         }
 
         override fun renderOutOfBounds(index: Int, x: Int, y: Int) {
@@ -117,9 +74,15 @@ class ConfigListEntry(
         }
     }
 
-    private fun optionName(option: BooleanOption): String {
-        val readableName = option.name.replace(Regex("([a-z])([A-Z])"), "$1 $2").replaceFirstChar { it.uppercase() }
-        val state = if (option.get()) "ON" else "OFF"
+    private fun BooleanOption.toReadableName(): String {
+        val readableName = name.replace(Regex("([a-z])([A-Z])"), "$1 $2").replaceFirstChar { it.uppercase() }
+        val state = if (get()) "ON" else "OFF"
         return "$readableName: $state"
+    }
+
+    private fun ConfigButtonWidget.toggleOption() {
+        val option = getOption()
+        option.set(!option.get())
+        message = option.toReadableName()
     }
 }

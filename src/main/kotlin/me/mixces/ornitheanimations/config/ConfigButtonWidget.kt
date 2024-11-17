@@ -8,8 +8,8 @@ import net.ornithemc.osl.config.api.config.option.BooleanOption
  * @see net.minecraft.client.gui.widget.OptionButtonWidget
  */
 class ConfigButtonWidget(
-    id: Int, x: Int, y: Int, private var option: BooleanOption, message: String
-) : ButtonWidget(id, x, y, 150, 20, message) {
+    x: Int, private var option: BooleanOption, message: String
+) : ButtonWidget(0, x, 0, 150, 20, message) {
 
     fun getOption(): BooleanOption {
         return option
