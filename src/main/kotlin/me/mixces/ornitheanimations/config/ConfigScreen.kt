@@ -4,6 +4,7 @@ import me.mixces.ornitheanimations.OrnitheAnimations
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.client.gui.widget.EntryListWidget
+import net.ornithemc.osl.config.api.ConfigManager
 import net.ornithemc.osl.config.api.config.option.group.OptionGroup
 
 /**
@@ -51,13 +52,13 @@ class ConfigScreen(
             return
         }
         if (button.id == 0) {
-            minecraft.options.save()
+            ConfigManager.save(Config)
             minecraft.openScreen(parentScreen)
         }
     }
 
     override fun removed() {
-        minecraft.options.save()
+        ConfigManager.save(Config)
         super.removed()
     }
 }

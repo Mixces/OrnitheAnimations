@@ -2,9 +2,13 @@ package me.mixces.ornitheanimations.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import me.mixces.ornitheanimations.OrnitheAnimations;
-import me.mixces.ornitheanimations.shared.ISwing;
+import net.minecraft.client.ClientPlayerInteractionManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.living.player.LocalClientPlayerEntity;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.HitResult;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,10 +19,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MinecraftMixin {
 
 	@Shadow
-	private int attackCooldown;
+	public LocalClientPlayerEntity player;
 
 	@Shadow
-	public LocalClientPlayerEntity player;
+	public HitResult crosshairTarget;
+
+	@Shadow
+	public ClientWorld world;
+
+	@Shadow
+	public ClientPlayerInteractionManager interactionManager;
+
+	@Shadow
+	private int attackCooldown;
 
 	@ModifyExpressionValue(
 		method = "tickBlockMining",
@@ -44,15 +57,14 @@ public abstract class MinecraftMixin {
 
 	@Inject(
 		method = "doAttack",
-		at = @At(
-			value = "RETURN",
-			ordinal = 0
-		)
+		at = @At("HEAD")
 	)
-	private void ornitheAnimations$addLeftClickCheck(CallbackInfo ci) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getHIDE_MISS_PENALTY().get()) {
-			/* fake swing during miss penalty to appear like 1.7 */
-			((ISwing) player).fakeSwingItem();
+	private void ornitheAnimations$oldMissPenalty(CallbackInfo ci) {
+		if (!OrnitheAnimations.INSTANCE.getConfig().getOLD_MISS_PENALTY().get()) {
+			return;
+		}
+		if (this.crosshairTarget != null && this.crosshairTarget.type != HitResult.Type.BLOCK) {
+			attackCooldown = 0;
 		}
 	}
 }

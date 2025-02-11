@@ -3,7 +3,6 @@ package me.mixces.ornitheanimations.mixin;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import me.mixces.ornitheanimations.OrnitheAnimations;
-import me.mixces.ornitheanimations.shared.ISwing;
 import net.minecraft.client.entity.living.player.LocalClientPlayerEntity;
 import net.minecraft.client.player.input.PlayerInput;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LocalClientPlayerEntity.class)
-public abstract class LocalClientPlayerEntityMixin extends PlayerEntityMixin implements ISwing {
+public abstract class LocalClientPlayerEntityMixin extends PlayerEntityMixin {
 
     @Shadow
 	public PlayerInput input;
@@ -37,19 +36,14 @@ public abstract class LocalClientPlayerEntityMixin extends PlayerEntityMixin imp
 
     @WrapMethod(method = "swingHand")
     private void ornitheAnimations$useFakeSwing(Operation<Void> original) {
-        if (OrnitheAnimations.INSTANCE.getConfig().getBLOCK_HITTING().get() && isUsingItem()) {
-            fakeSwingItem();
+        if (OrnitheAnimations.INSTANCE.getConfig().getBLOCK_HITTING().get() &&
+			!OrnitheAnimations.INSTANCE.getConfig().getOLD_CONSUME_DESTROY().get() && isUsingItem()) {
+			if (!handSwinging || handSwingTicks >= ornitheAnimations$getMiningSpeedMultiplier() / 2 || handSwingTicks < 0) {
+				handSwingTicks = -1;
+				handSwinging = true;
+			}
         } else {
 			original.call();
 		}
     }
-
-	@SuppressWarnings("AddedMixinMembersNamePattern")
-	@Override
-	public void fakeSwingItem() {
-		if (!handSwinging || handSwingTicks >= ornitheAnimations$getMiningSpeedMultiplier() / 2 || handSwingTicks < 0) {
-			handSwingTicks = -1;
-			handSwinging = true;
-		}
-	}
 }

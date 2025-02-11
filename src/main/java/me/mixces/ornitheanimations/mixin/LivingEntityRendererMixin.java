@@ -1,6 +1,8 @@
 package me.mixces.ornitheanimations.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import me.mixces.ornitheanimations.OrnitheAnimations;
+import me.mixces.ornitheanimations.config.Config;
 import me.mixces.ornitheanimations.hook.DamageTint;
 import me.mixces.ornitheanimations.shared.IDamageTint;
 import me.mixces.ornitheanimations.util.GlHelper;
@@ -8,6 +10,7 @@ import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.entity.living.LivingEntity;
 import net.minecraft.entity.living.player.PlayerEntity;
 import org.jetbrains.annotations.NotNull;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -74,7 +77,7 @@ public abstract class LivingEntityRendererMixin implements IDamageTint {
 	private void ornitheAnimations$cancelDamageBrightness(LivingEntityRenderer<LivingEntity> instance, LivingEntity entity, float handSwing, float handSwingAmount, float age, float yaw, float pitch, float scale) {
 		renderHand(entity, handSwing, handSwingAmount, age, yaw, pitch, scale);
 
-		if (!OrnitheAnimations.INSTANCE.getConfig().getALTERNATIVE_DAMAGE_TINT().get()) {
+		if (!OrnitheAnimations.INSTANCE.getConfig().getOLD_DAMAGE_TINT().get()) {
 			return;
 		}
 
@@ -102,7 +105,7 @@ public abstract class LivingEntityRendererMixin implements IDamageTint {
 	)
 	private boolean ornitheAnimations$cancelDamageBrightness(LivingEntityRenderer<LivingEntity> instance, LivingEntity entity, float tickDelta) {
 		/* cancel model damage tint */
-		if (OrnitheAnimations.INSTANCE.getConfig().getALTERNATIVE_DAMAGE_TINT().get()) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_DAMAGE_TINT().get()) {
 			return false;
 		}
 		return setupOverlayColor(entity, tickDelta);
@@ -117,10 +120,25 @@ public abstract class LivingEntityRendererMixin implements IDamageTint {
 	)
 	private boolean ornitheAnimations$cancelDamageBrightness2(LivingEntityRenderer<LivingEntity> instance, LivingEntity entity, float tickDelta, boolean bl) {
 		/* cancel layer damage tint */
-		if (OrnitheAnimations.INSTANCE.getConfig().getALTERNATIVE_DAMAGE_TINT().get()) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_DAMAGE_TINT().get()) {
 			return false;
 		}
 		return setupOverlayColor(entity, tickDelta, bl);
+	}
+
+	@ModifyExpressionValue(
+		method = "setupOverlayColor(Lnet/minecraft/entity/living/LivingEntity;FZ)Z",
+		at = @At(
+			value = "FIELD",
+			opcode = Opcodes.GETFIELD,
+			target = "Lnet/minecraft/entity/living/LivingEntity;hurtTime:I"
+		)
+	)
+	private int ornitheAnimations$oldTickDelay(int original) {
+		if (Config.INSTANCE.getOLD_RENDER_TICK_DELAY().get()) {
+			return Math.max(original - 1, 0);
+		}
+		return original;
 	}
 
 	@SuppressWarnings("AddedMixinMembersNamePattern")
@@ -133,7 +151,12 @@ public abstract class LivingEntityRendererMixin implements IDamageTint {
 		final float f = livingEntity.getBrightness(partialTicks);
 		final int i = getOverlayColor(livingEntity, f, partialTicks);
 		final boolean flag = (i >> 24 & 0xFF) > 0;
-		final boolean flag1 = livingEntity.hurtTime > 0 || livingEntity.deathTime > 0;
+
+		int hurtTime = livingEntity.hurtTime;
+		if (Config.INSTANCE.getOLD_RENDER_TICK_DELAY().get()) {
+			hurtTime = Math.max(hurtTime - 1, 0);
+		}
+		final boolean flag1 = hurtTime > 0 || livingEntity.deathTime > 0;
 
 		if (!flag && !flag1) {
 			return false;

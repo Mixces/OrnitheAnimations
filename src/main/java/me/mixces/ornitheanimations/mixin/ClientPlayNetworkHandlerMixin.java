@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayNetworkHandler.class)
-public class ClientPlayNetworkHandlerMixin {
+public abstract class ClientPlayNetworkHandlerMixin {
 
 	@ModifyExpressionValue(
 		method = "handleAddXpOrb",
@@ -23,6 +23,18 @@ public class ClientPlayNetworkHandlerMixin {
 		return original / (OrnitheAnimations.INSTANCE.getConfig().getOLD_XP_ORB_RENDERING().get() ?
 			32.0D : 1.0D /* renders the xp orbs similar to 1.7 by oddly offsetting them */
 		);
+	}
+
+	@ModifyExpressionValue(
+		method = "handleEntityPickup",
+		at = @At(
+			value = "CONSTANT",
+			args = "floatValue=0.5"
+		)
+	)
+	private float ornitheAnimations$oldItemPickup(float original) {
+		/* taken from 1.7 */
+		return OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_PICKUP().get() ? -0.5F : original;
 	}
 
 	@Inject(

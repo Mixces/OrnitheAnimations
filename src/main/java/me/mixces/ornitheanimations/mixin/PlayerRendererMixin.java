@@ -1,5 +1,6 @@
 package me.mixces.ornitheanimations.mixin;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import me.mixces.ornitheanimations.OrnitheAnimations;
 import net.minecraft.client.entity.living.player.ClientPlayerEntity;
 import net.minecraft.client.render.entity.PlayerRenderer;
@@ -40,6 +41,21 @@ public abstract class PlayerRendererMixin {
 			for (ModelPart layer : wearLayers) {
 				layer.visible = false;
 			}
+		}
+	}
+
+	@Inject(
+		method = {"renderPlayerLeftHandModel", "renderPlayerRightHandModel"},
+		at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/client/render/entity/PlayerRenderer;setModelStatus(Lnet/minecraft/client/entity/living/player/ClientPlayerEntity;)V",
+			shift = At.Shift.AFTER
+		)
+	)
+	private void ornitheAnimations$dontSetModelStatus(ClientPlayerEntity player, CallbackInfo ci, @Local PlayerModel playerModel) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getFIX_ARM_ITEM_ROTATION().get()) {
+			/* don't apply third person arm rotation to first person */
+			playerModel.rightHandItemId = 0;
 		}
 	}
 }

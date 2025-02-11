@@ -111,7 +111,7 @@ public abstract class ItemRendererMixin {
 		)
 	)
 	public BakedModel ornitheAnimations$replaceModel(BakedModel model) {
-		return OrnitheAnimations.INSTANCE.getConfig().getBETTER_GLINT().get() ? GlintModel.getModel(model) : model;
+		return OrnitheAnimations.INSTANCE.getConfig().getOLD_GLINT().get() ? GlintModel.getModel(model) : model;
 	}
 
 	@ModifyArg(
@@ -123,7 +123,7 @@ public abstract class ItemRendererMixin {
 		index = 1
 	)
 	public int ornitheAnimations$replaceColor(int color) {
-		return OrnitheAnimations.INSTANCE.getConfig().getBETTER_GLINT().get() ? -10407781 : color;
+		return OrnitheAnimations.INSTANCE.getConfig().getOLD_GLINT().get() ? -10407781 : color;
 	}
 
 	@Inject(
@@ -132,8 +132,9 @@ public abstract class ItemRendererMixin {
 		cancellable = true
 	)
 	public void ornitheAnimations$disableDefaultGlint(CallbackInfo ci) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getBETTER_GLINT().get() && ornitheAnimations$isGui) ci.cancel();
-		if (OrnitheAnimations.INSTANCE.getConfig().getFAST_ITEMS().get() && !ornitheAnimations$isGui && !ornitheAnimations$isHeld) ci.cancel();
+		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_GLINT().get() && ornitheAnimations$isGui) ci.cancel();
+		if (OrnitheAnimations.INSTANCE.getConfig().getFAST_ITEMS().get() && !ornitheAnimations$isGui && !ornitheAnimations$isHeld)
+			ci.cancel();
 	}
 
 	@ModifyExpressionValue(
@@ -143,7 +144,7 @@ public abstract class ItemRendererMixin {
 			args = "floatValue=8.0F")
 	)
 	public float ornitheAnimations$modifyScale(float original) {
-		return OrnitheAnimations.INSTANCE.getConfig().getBETTER_GLINT().get() ? 1.0F / original : original;
+		return OrnitheAnimations.INSTANCE.getConfig().getOLD_GLINT().get() ? 1.0F / original : original;
 	}
 
 	@Inject(
@@ -188,7 +189,7 @@ public abstract class ItemRendererMixin {
 		)
 	)
 	public void ornitheAnimations$useCustomGlint(ItemStack stack, int x, int y, CallbackInfo ci) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getBETTER_GLINT().get() && stack.hasEnchantmentGlint()) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_GLINT().get() && stack.hasEnchantmentGlint()) {
 			GlintHandler.renderEnchantmentGlint(textureManager, ENCHANTMENT_GLINT_LOCATION, () -> {
 				prepareGuiItemRender(x, y, false); /* i love kotlin */
 				return Unit.INSTANCE;

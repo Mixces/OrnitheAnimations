@@ -34,15 +34,14 @@ public abstract class ClientPlayerInteractionManagerMixin {
 		),
 		cancellable = true
 	)
-    private void ornitheAnimations$resetDestroyProgress(BlockPos pos, Direction face, CallbackInfoReturnable<Boolean> cir) {
-		if (!OrnitheAnimations.INSTANCE.getConfig().getBLOCK_HITTING().get()) {
-			return;
-		}
-        if (minecraft.player.isUsingItem() && minecraft.player.canModifyWorld()) {
-            if (miningProgress > 0.0F) {
-                stopMiningBlock();
-            }
+	private void ornitheAnimations$resetDestroyProgress(BlockPos pos, Direction face, CallbackInfoReturnable<Boolean> cir) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getBLOCK_HITTING().get() &&
+			!OrnitheAnimations.INSTANCE.getConfig().getOLD_CONSUME_DESTROY().get() &&
+			minecraft.player.isUsingItem() && minecraft.player.canModifyWorld()) {
+			if (miningProgress > 0.0F) {
+				stopMiningBlock();
+			}
 			cir.setReturnValue(true);
-        }
-    }
+		}
+	}
 }

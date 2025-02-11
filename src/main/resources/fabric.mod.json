@@ -3,12 +3,11 @@
 	"id": "ornitheanimations",
 	"version": "${version}",
 	"name": "OrnitheAnimations",
-	"description": "Simple old animations mod for Ornithe!",
+	"description": "Brings back the feel of 1.7!",
 	"authors": [
 		"Mixces"
 	],
 	"contact": {
-		"homepage": "https://ornithemc.net/",
 		"sources": "https://github.com/Mixces/OrnitheAnimations"
 	},
 	"license": "CC0-1.0",

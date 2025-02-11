@@ -11,8 +11,10 @@
     "EntityMixin",
     "EntityPickupParticleMixin",
     "EntityRenderDispatcherMixin",
+    "EntityRendererMixin",
     "FishingBobberRendererMixin",
     "GameGuiMixin",
+    "GameRendererMixin",
     "HeldItemLayerMixin",
     "HeldItemRendererMixin",
     "HumanoidModelMixin",
@@ -40,5 +42,5 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+	}
 }

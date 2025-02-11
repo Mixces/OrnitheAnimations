@@ -1,44 +1,50 @@
 package me.mixces.ornitheanimations.mixin;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import me.mixces.ornitheanimations.OrnitheAnimations;
-import me.mixces.ornitheanimations.util.GlHelper;
 import net.minecraft.client.entity.particle.EntityPickupParticle;
 import net.minecraft.entity.Entity;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EntityPickupParticle.class)
-public abstract class EntityPickupParticleMixin {
+public class EntityPickupParticleMixin {
 
-	@Inject(
+	@Shadow
+	private Entity collector;
+
+	@ModifyExpressionValue(
 		method = "render",
 		at = @At(
-			value = "INVOKE",
-			target = "Lnet/minecraft/client/render/entity/EntityRenderDispatcher;render(Lnet/minecraft/entity/Entity;DDDFF)Z"
+			value = "FIELD",
+			opcode = Opcodes.GETFIELD,
+			target = "Lnet/minecraft/entity/Entity;prevTickY:D"
 		)
 	)
-	private void ornitheAnimations$pushPosition(BufferBuilder bufferBuilder, Entity camera, float tickDelta, float dx, float dy, float dz, float forwards, float sideways, CallbackInfo ci) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getBETTER_ITEM_PICKUP().get()) {
-			GlStateManager.pushMatrix();
-			GlHelper.INSTANCE.translate(0.0F, 0.5F, 0.0F);
+	private double ornitheAnimations$includeEyeHeight$PrevTickY(double original) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_PICKUP().get()) {
+			/* taken from 1.7 */
+			original += collector.getEyeHeight();
 		}
+		return original;
 	}
 
-	@Inject(
+	@ModifyExpressionValue(
 		method = "render",
 		at = @At(
-			value = "INVOKE",
-			target = "Lnet/minecraft/client/render/entity/EntityRenderDispatcher;render(Lnet/minecraft/entity/Entity;DDDFF)Z",
-			shift = At.Shift.AFTER
+			value = "FIELD",
+			opcode = Opcodes.GETFIELD,
+			target = "Lnet/minecraft/entity/Entity;y:D",
+			ordinal = 1
 		)
 	)
-	private void ornitheAnimations$popPosition(BufferBuilder bufferBuilder, Entity camera, float tickDelta, float dx, float dy, float dz, float forwards, float sideways, CallbackInfo ci) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getBETTER_ITEM_PICKUP().get()) {
-			GlStateManager.popMatrix();
+	private double ornitheAnimations$includeEyeHeight$Y(double original) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_PICKUP().get()) {
+			/* taken from 1.7 */
+			original += collector.getEyeHeight();
 		}
+		return original;
 	}
 }

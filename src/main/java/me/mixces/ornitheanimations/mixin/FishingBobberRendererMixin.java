@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(FishingBobberRenderer.class)
-public class FishingBobberRendererMixin {
+public abstract class FishingBobberRendererMixin {
 
 	@ModifyArgs(
 		method = "render(Lnet/minecraft/entity/FishingBobberEntity;DDDFF)V",
@@ -20,8 +20,8 @@ public class FishingBobberRendererMixin {
 	private void ornitheAnimations$modifyLinePosition(Args args) {
 		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get()) {
 		/* original values from 1.7 */
-		args.set(0, -0.5D);
-		args.set(2, 0.8D);
+			args.set(0, -0.5D);
+			args.set(2, 0.8D);
 		}
 	}
 

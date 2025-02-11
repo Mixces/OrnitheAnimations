@@ -11,7 +11,10 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.block.ModelTransformations;
 import net.minecraft.entity.living.LivingEntity;
 import net.minecraft.item.ItemStack;
-import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -110,7 +113,7 @@ public abstract class HeldItemRendererMixin {
 		/* original transformations from 1.7 */
 		builder.translate(0.0F, -0.3F, 0.0F).scale(1.5F, 1.5F, 1.5F).yaw(50.0F).roll(335.0F).translate(-0.9375F, -0.0625F, 0.0F);
 		/* idk */
-		builder.yaw(180.0F).translate(-0.5F, 0.5F, 0.03F);
+		builder.yaw(180.0F).translate(-0.5F, 0.5F, 0.03125F);
 	}
 
 	@Inject(
@@ -146,6 +149,6 @@ public abstract class HeldItemRendererMixin {
 		)
 	)
 	private boolean ornitheAnimations$modifyReEquipBehavior(boolean original) {
-		return original && (!OrnitheAnimations.INSTANCE.getConfig().getFULL_REEQUIP_LOGIC().get() || selectedSlot == minecraft.player.inventory.selectedSlot);
+		return original && (!OrnitheAnimations.INSTANCE.getConfig().getOLD_EQUIP_LOGIC().get() || selectedSlot == minecraft.player.inventory.selectedSlot);
 	}
 }
