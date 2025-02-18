@@ -2,10 +2,14 @@ package me.mixces.ornitheanimations.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tessellator;
 import kotlin.Unit;
 import me.mixces.ornitheanimations.OrnitheAnimations;
 import me.mixces.ornitheanimations.handler.GlintHandler;
 import me.mixces.ornitheanimations.hook.GlintModel;
+import me.mixces.ornitheanimations.hook.ModelUtil;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.block.ModelTransformations;
 import net.minecraft.client.render.texture.TextureManager;
@@ -13,8 +17,10 @@ import net.minecraft.client.resource.model.BakedModel;
 import net.minecraft.client.resource.model.BakedQuad;
 import net.minecraft.entity.living.LivingEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.PotionItem;
 import net.minecraft.resource.Identifier;
 import net.minecraft.util.math.Direction;
+import org.lwjgl.opengl.GL11;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,8 +34,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
 
 @Mixin(ItemRenderer.class)
 public abstract class ItemRendererMixin {
@@ -44,6 +48,9 @@ public abstract class ItemRendererMixin {
 
 	@Shadow
 	protected abstract void prepareGuiItemRender(int x, int y, boolean gui3d);
+
+	@Shadow
+	protected abstract void renderQuad(BufferBuilder bufferBuilder, BakedQuad quad, int color);
 
 	@Unique
 	private boolean ornitheAnimations$isGui;
@@ -95,10 +102,10 @@ public abstract class ItemRendererMixin {
 		)
 	)
 	private List<BakedQuad> overflowAnimations$changeToSprite(List<BakedQuad> quads, @Local(argsOnly = true) BakedModel model) {
-		if (ornitheAnimations$isGui && !model.isGui3d()) {
-			return quads.stream().filter(baked -> baked.getFace() == Direction.SOUTH).collect(Collectors.toList());
-		} else if (OrnitheAnimations.INSTANCE.getConfig().getFAST_ITEMS().get() && !ornitheAnimations$isGui && !ornitheAnimations$isHeld && !model.isGui3d()) {
-			return quads.stream().filter(baked -> baked.getFace() == Direction.SOUTH).collect(Collectors.toList());
+		List<BakedQuad> filteredQuads = quads.stream().filter(baked -> baked.getFace() == Direction.SOUTH).toList();
+		if (!model.isGui3d() && (ornitheAnimations$isGui ||
+			(OrnitheAnimations.INSTANCE.getConfig().getFAST_ITEMS().get() && !ornitheAnimations$isHeld))) {
+			return filteredQuads;
 		}
 		return quads;
 	}
@@ -194,6 +201,25 @@ public abstract class ItemRendererMixin {
 				prepareGuiItemRender(x, y, false); /* i love kotlin */
 				return Unit.INSTANCE;
 			});
+		}
+	}
+
+	@Inject(
+		method = "renderItem",
+		at = @At(
+			value = "INVOKE",
+			target = "Lcom/mojang/blaze3d/platform/GlStateManager;popMatrix()V"
+		)
+	)
+	private void ornitheAnimations$useCustomModel(ItemStack stack, BakedModel model, CallbackInfo ci) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_LAYER_GLINT().get() && stack.getItem() instanceof PotionItem) {
+			/* renders the splash/drinkable bottle AFTER the glint rendering like in 1.7 */
+			String id = PotionItem.isSplashPotion(stack.getMetadata()) ? "bottle_splash_empty" : "bottle_drinkable_empty";
+			Tessellator tessellator = Tessellator.getInstance();
+			BufferBuilder bufferBuilder = tessellator.getBuilder();
+			bufferBuilder.begin(GL11.GL_QUADS, DefaultVertexFormat.BLOCK_NORMALS);
+			ModelUtil.getModelFromIdentifier(id).getQuads().forEach(quad -> renderQuad(bufferBuilder, quad, -1));
+			tessellator.end();
 		}
 	}
 }

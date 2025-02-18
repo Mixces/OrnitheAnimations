@@ -5,10 +5,8 @@ import me.mixces.ornitheanimations.OrnitheAnimations;
 import me.mixces.ornitheanimations.config.Config;
 import me.mixces.ornitheanimations.hook.DamageTint;
 import me.mixces.ornitheanimations.shared.IDamageTint;
-import me.mixces.ornitheanimations.util.GlHelper;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.entity.living.LivingEntity;
-import net.minecraft.entity.living.player.PlayerEntity;
 import org.jetbrains.annotations.NotNull;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,6 +29,9 @@ public abstract class LivingEntityRendererMixin implements IDamageTint {
 	protected abstract boolean setupOverlayColor(LivingEntity entity, float tickDelta, boolean bl);
 
 	@Shadow
+	protected abstract boolean setupOverlayColor(LivingEntity entity, float tickDelta);
+
+	@Shadow
 	protected abstract void tearDownOverlayColor();
 
 	@Shadow
@@ -50,22 +51,6 @@ public abstract class LivingEntityRendererMixin implements IDamageTint {
 		ornitheAnimations$h.set(h);
 	}
 
-	@Inject(
-		method = "render(Lnet/minecraft/entity/living/LivingEntity;DDDFF)V",
-		at = @At(
-			value = "INVOKE",
-			target = "Lcom/mojang/blaze3d/platform/GlStateManager;translatef(FFF)V"
-		)
-    )
-    private void ornitheAnimations$addSneakingTranslation(LivingEntity entity, double x, double y, double z, float entityYaw, float partialTicks, CallbackInfo ci) {
-        if (!OrnitheAnimations.INSTANCE.getConfig().getSMOOTH_SNEAKING().get()) {
-			return;
-		}
-		if (entity instanceof PlayerEntity && entity.isSneaking()) {
-			GlHelper.INSTANCE.translate(0.0F, -0.2F, 0.0F);
-        }
-    }
-
 	@Redirect(
 		method = "render(Lnet/minecraft/entity/living/LivingEntity;DDDFF)V",
 		at = @At(
@@ -81,7 +66,7 @@ public abstract class LivingEntityRendererMixin implements IDamageTint {
 			return;
 		}
 
-		if (setupOverlayColor(entity, ornitheAnimations$h.get())) {
+		if (ornitheAnimations$setupOverlayColor(entity, ornitheAnimations$h.get())) {
 			renderHand(entity, handSwing, handSwingAmount, age, yaw, pitch, scale);
 			DamageTint.unsetDamageTint();
 		}
@@ -141,9 +126,8 @@ public abstract class LivingEntityRendererMixin implements IDamageTint {
 		return original;
 	}
 
-	@SuppressWarnings("AddedMixinMembersNamePattern")
 	@Override
-	public boolean setupOverlayColor(@NotNull LivingEntity livingEntity, float partialTicks) {
+	public boolean ornitheAnimations$setupOverlayColor(@NotNull LivingEntity livingEntity, float partialTicks) {
 		/* trick to ensure the brightnessBuffer is updated*/
 		if (setupOverlayColor(livingEntity, partialTicks, true)) tearDownOverlayColor();
 		/* if there are any performance issues, blame this */

@@ -48,7 +48,11 @@ public abstract class ProjectileRendererMixin {
 	)
 	private void ornitheAnimations$applyProjectilePosition(Entity entity, double x, double y, double z, float entityYaw, float partialTicks, CallbackInfo ci) {
 		if (OrnitheAnimations.INSTANCE.getConfig().getMIRRORED_PROJECTILES().get()) {
-			GlHelper.INSTANCE.translate(0.0F, 0.25F, 0.0625F);
+			GlHelper.translate(0.0F, 0.25F, 0.0F);
+		}
+
+		if (OrnitheAnimations.INSTANCE.getConfig().getFAST_ITEMS().get()) {
+			GlHelper.translate(0.0F, 0.0F, 0.3125F);
 		}
 	}
 }

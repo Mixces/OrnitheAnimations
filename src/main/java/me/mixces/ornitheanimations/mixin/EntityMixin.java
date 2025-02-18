@@ -1,6 +1,7 @@
 package me.mixces.ornitheanimations.mixin;
 
 import me.mixces.ornitheanimations.OrnitheAnimations;
+import me.mixces.ornitheanimations.hook.PlayerHook;
 import net.minecraft.entity.Entity;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
@@ -44,7 +45,7 @@ public abstract class EntityMixin {
 		)
     )
     private void ornitheAnimations$reAssignY(CallbackInfo ci) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getSMOOTH_SNEAKING().get()) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getSMOOTH_SNEAKING().get() && PlayerHook.isSelf((Entity) (Object) this)) {
 			y -= ornitheAnimations$ySize;
 		}
     }

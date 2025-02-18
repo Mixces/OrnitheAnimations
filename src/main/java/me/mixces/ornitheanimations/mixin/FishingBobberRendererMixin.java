@@ -19,7 +19,7 @@ public abstract class FishingBobberRendererMixin {
 	)
 	private void ornitheAnimations$modifyLinePosition(Args args) {
 		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get()) {
-		/* original values from 1.7 */
+			/* original values from 1.7 */
 			args.set(0, -0.5D);
 			args.set(2, 0.8D);
 		}

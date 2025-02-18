@@ -1,47 +1,26 @@
 package me.mixces.ornitheanimations.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import me.mixces.ornitheanimations.OrnitheAnimations;
 import net.minecraft.client.ClientPlayerInteractionManager;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientPlayerInteractionManager.class)
 public abstract class ClientPlayerInteractionManagerMixin {
 
 	@Shadow
-	@Final
-	private Minecraft minecraft;
+	public abstract boolean isMiningBlock();
 
-	@Shadow
-	private float miningProgress;
-
-	@Shadow
-	public abstract void stopMiningBlock();
-
-	@Inject(
+	@ModifyExpressionValue(
 		method = "updateBlockMining",
 		at = @At(
 			value = "INVOKE",
-			target = "Lnet/minecraft/client/ClientPlayerInteractionManager;updateSelectedHotbarSlot()V",
-			shift = At.Shift.AFTER
-		),
-		cancellable = true
+			target = "Lnet/minecraft/client/ClientPlayerInteractionManager;isMiningBlock(Lnet/minecraft/util/math/BlockPos;)Z"
+		)
 	)
-	private void ornitheAnimations$resetDestroyProgress(BlockPos pos, Direction face, CallbackInfoReturnable<Boolean> cir) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getBLOCK_HITTING().get() &&
-			!OrnitheAnimations.INSTANCE.getConfig().getOLD_CONSUME_DESTROY().get() &&
-			minecraft.player.isUsingItem() && minecraft.player.canModifyWorld()) {
-			if (miningProgress > 0.0F) {
-				stopMiningBlock();
-			}
-			cir.setReturnValue(true);
-		}
+	private boolean ornitheAnimations$resetDestroyProgress(boolean original) {
+		return OrnitheAnimations.INSTANCE.getConfig().getBLOCK_HITTING().get() ? original && isMiningBlock() : original;
 	}
 }

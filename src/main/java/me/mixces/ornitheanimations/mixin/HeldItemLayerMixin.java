@@ -3,6 +3,8 @@ package me.mixces.ornitheanimations.mixin;
 import com.llamalad7.mixinextras.expression.Definition;
 import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import me.mixces.ornitheanimations.OrnitheAnimations;
 import me.mixces.ornitheanimations.hook.ItemBlacklist;
@@ -46,7 +48,33 @@ public abstract class HeldItemLayerMixin {
 		at = @At("MIXINEXTRAS:EXPRESSION")
 	)
 	private boolean ornitheAnimations$allowBlocksTransforms(boolean original) {
-		return true;
+		return OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get() || original;
+	}
+
+	@WrapOperation(
+		method = "render",
+		at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/entity/living/LivingEntity;isSneaking()Z"
+		)
+	)
+	private boolean ornitheAnimations$disableSneakTranslation(LivingEntity instance, Operation<Boolean> original) {
+		return !OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get() &&
+			!OrnitheAnimations.INSTANCE.getConfig().getSMOOTH_SNEAKING().get() && original.call(instance);
+	}
+
+	@Inject(
+		method = "render",
+		at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/client/render/model/entity/HumanoidModel;translateRightArm(F)V"
+		)
+	)
+	private void legarity$mc125204fix(LivingEntity entity, float handSwingAmount, float handSwing, float tickDelta, float age, float headYaw, float headPitch, float scale, CallbackInfo ci) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get() &&
+			!OrnitheAnimations.INSTANCE.getConfig().getSMOOTH_SNEAKING().get() && entity.isSneaking()) {
+			GlHelper.translate(0.0F, 0.2F, 0.0F);
+		}
 	}
 
     @Inject(
@@ -63,24 +91,38 @@ public abstract class HeldItemLayerMixin {
 		if (Minecraft.getInstance().getItemRenderer().isGui3d(stack) || ItemBlacklist.isPresent(stack)) {
 			return;
 		}
-		GlHelper builder = GlHelper.INSTANCE;
-		float var7;
 		/* original transformations from 1.7 */
+		float var7;
 		if (item == Items.BOW) {
 			var7 = 0.625F;
-			builder.translate(0.0F, 0.125F, 0.3125F).yaw(-20.0F).scale(var7, -var7, var7).pitch(-100.0F).yaw(45.0F);
+			GlHelper.translate(0.0F, 0.125F, 0.3125F);
+			GlHelper.yaw(-20.0F);
+			GlHelper.scale(var7, -var7, var7);
+			GlHelper.pitch(-100.0F);
+			GlHelper.yaw(45.0F);
 		} else if (item.isHandheld()) {
 			var7 = 0.625F;
 			if (item.shouldRotate()) {
-				builder.roll(180.0F).translate(0.0F, -0.125F, 0.0F);
+				GlHelper.roll(180.0F);
+				GlHelper.translate(0.0F, -0.125F, 0.0F);
 			}
 			if (entity instanceof PlayerEntity && ((PlayerEntity) entity).getItemUseTimer() > 0 && ((PlayerEntity) entity).isSwordBlocking()) {
-				builder.translate(0.05F, 0.0F, -0.1F).yaw(-50.0F).pitch(-10.0F).roll(-60.0F);
+				GlHelper.translate(0.05F, 0.0F, -0.1F);
+				GlHelper.yaw(-50.0F);
+				GlHelper.pitch(-10.0F);
+				GlHelper.roll(-60.0F);
 			}
-			builder.translate(0.0F, 0.1875F, 0.0F).scale(var7, -var7, var7).pitch(-100.0F).yaw(45.0F);
+			GlHelper.translate(0.0F, 0.1875F, 0.0F);
+			GlHelper.scale(var7, -var7, var7);
+			GlHelper.pitch(-100.0F);
+			GlHelper.yaw(45.0F);
 		} else {
 			var7 = 0.375F;
-			builder.translate(0.25F, 0.1875F, -0.1875F).scale(var7, var7, var7).roll(60.0F).pitch(-90.0F).roll(20.0F);
+			GlHelper.translate(0.25F, 0.1875F, -0.1875F);
+			GlHelper.scale(var7, var7, var7);
+			GlHelper.roll(60.0F);
+			GlHelper.pitch(-90.0F);
+			GlHelper.roll(20.0F);
 		}
     }
 

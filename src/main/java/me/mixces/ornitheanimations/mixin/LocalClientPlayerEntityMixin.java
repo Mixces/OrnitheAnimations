@@ -1,7 +1,5 @@
 package me.mixces.ornitheanimations.mixin;
 
-import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import me.mixces.ornitheanimations.OrnitheAnimations;
 import net.minecraft.client.entity.living.player.LocalClientPlayerEntity;
 import net.minecraft.client.player.input.PlayerInput;
@@ -32,18 +30,5 @@ public abstract class LocalClientPlayerEntityMixin extends PlayerEntityMixin {
         if (input.sneaking && ornitheAnimations$ySize < 0.2F) {
             ornitheAnimations$ySize = 0.2F;
         }
-    }
-
-    @WrapMethod(method = "swingHand")
-    private void ornitheAnimations$useFakeSwing(Operation<Void> original) {
-        if (OrnitheAnimations.INSTANCE.getConfig().getBLOCK_HITTING().get() &&
-			!OrnitheAnimations.INSTANCE.getConfig().getOLD_CONSUME_DESTROY().get() && isUsingItem()) {
-			if (!handSwinging || handSwingTicks >= ornitheAnimations$getMiningSpeedMultiplier() / 2 || handSwingTicks < 0) {
-				handSwingTicks = -1;
-				handSwinging = true;
-			}
-        } else {
-			original.call();
-		}
     }
 }

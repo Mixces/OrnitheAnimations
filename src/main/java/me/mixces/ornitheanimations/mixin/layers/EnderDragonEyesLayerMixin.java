@@ -1,11 +1,11 @@
-package me.mixces.ornitheanimations.mixin.damagelayers;
+package me.mixces.ornitheanimations.mixin.layers;
 
 import me.mixces.ornitheanimations.OrnitheAnimations;
 import me.mixces.ornitheanimations.hook.DamageTint;
 import me.mixces.ornitheanimations.shared.IDamageTint;
-import net.minecraft.client.render.entity.SpiderRenderer;
-import net.minecraft.client.render.entity.layer.SpiderEyesLayer;
-import net.minecraft.entity.living.mob.hostile.SpiderEntity;
+import net.minecraft.client.render.entity.EnderDragonRenderer;
+import net.minecraft.client.render.entity.layer.EnderDragonEyesLayer;
+import net.minecraft.entity.living.mob.hostile.boss.EnderDragonEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -13,28 +13,28 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(SpiderEyesLayer.class)
-public abstract class SpiderEyesLayerMixin {
+@Mixin(EnderDragonEyesLayer.class)
+public abstract class EnderDragonEyesLayerMixin {
 
 	@Shadow
 	@Final
-	private SpiderRenderer<SpiderEntity> parent;
+	private EnderDragonRenderer parent;
 
 	@Inject(
-            method = "render(Lnet/minecraft/entity/living/mob/hostile/SpiderEntity;FFFFFFF)V",
+            method = "render(Lnet/minecraft/entity/living/mob/hostile/boss/EnderDragonEntity;FFFFFFF)V",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/render/model/Model;render(Lnet/minecraft/entity/Entity;FFFFFF)V",
                     shift = At.Shift.AFTER
             )
     )
-    public void ornitheAnimations$addDamageBrightness(SpiderEntity spiderEntity, float f, float g, float h, float i, float j, float k, float l, CallbackInfo ci) {
+    public void ornitheAnimations$addDamageBrightness(EnderDragonEntity enderDragonEntity, float f, float g, float h, float i, float j, float k, float l, CallbackInfo ci) {
 		/* colors the entity's layer red just like 1.7 */
 		if (!OrnitheAnimations.INSTANCE.getConfig().getOLD_DAMAGE_TINT().get()) {
 			return;
 		}
-		if (((IDamageTint) parent).setupOverlayColor(spiderEntity, h)) {
-			parent.getModel().render(spiderEntity, f, g, i, j, k, l);
+		if (((IDamageTint) parent).ornitheAnimations$setupOverlayColor(enderDragonEntity, h)) {
+			parent.getModel().render(enderDragonEntity, f, g, i, j, k, l);
 			DamageTint.unsetDamageTint();
 		}
     }

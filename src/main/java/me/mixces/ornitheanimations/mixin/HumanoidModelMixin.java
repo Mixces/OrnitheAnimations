@@ -1,5 +1,7 @@
 package me.mixces.ornitheanimations.mixin;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import me.mixces.ornitheanimations.OrnitheAnimations;
 import net.minecraft.client.render.model.ModelPart;
 import net.minecraft.client.render.model.entity.HumanoidModel;
@@ -17,6 +19,17 @@ public abstract class HumanoidModelMixin {
 
     @Shadow
 	public ModelPart rightArm;
+
+	@WrapOperation(
+		method = "render",
+		at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/entity/Entity;isSneaking()Z"
+		)
+	)
+	private boolean ornitheAnimations$disableSneakTranslation(Entity instance, Operation<Boolean> original) {
+		return !OrnitheAnimations.INSTANCE.getConfig().getSMOOTH_SNEAKING().get() && original.call(instance);
+	}
 
     @Inject(
 		method = "setAngles",

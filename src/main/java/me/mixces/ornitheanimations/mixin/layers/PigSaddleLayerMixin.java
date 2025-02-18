@@ -1,4 +1,4 @@
-package me.mixces.ornitheanimations.mixin.damagelayers;
+package me.mixces.ornitheanimations.mixin.layers;
 
 import me.mixces.ornitheanimations.OrnitheAnimations;
 import me.mixces.ornitheanimations.hook.DamageTint;
@@ -38,7 +38,7 @@ public abstract class PigSaddleLayerMixin {
 		if (!OrnitheAnimations.INSTANCE.getConfig().getOLD_DAMAGE_TINT().get()) {
 			return;
 		}
-		if (((IDamageTint) parent).setupOverlayColor(pigEntity, h)) {
+		if (((IDamageTint) parent).ornitheAnimations$setupOverlayColor(pigEntity, h)) {
 			model.render(pigEntity, f, g, i, j, k, l);
 			DamageTint.unsetDamageTint();
 		}

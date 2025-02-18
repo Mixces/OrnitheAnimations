@@ -6,7 +6,8 @@ import com.mojang.blaze3d.platform.GlStateManager
 import com.mojang.blaze3d.vertex.BufferBuilder
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.Tessellator
-import me.mixces.ornitheanimations.util.GlHelper
+import me.mixces.ornitheanimations.util.scale
+import me.mixces.ornitheanimations.util.translate
 import net.minecraft.client.Minecraft
 import net.minecraft.client.render.texture.TextureAtlas
 import net.minecraft.client.render.texture.TextureManager
@@ -29,7 +30,8 @@ fun renderEnchantmentGlint(textureManager: TextureManager, glintTexture: Identif
     GlStateManager.pushMatrix()
     setupGuiTransform()
     /* this is needed to adapt the glint to the gui */
-    GlHelper.translate(-0.25f, -0.25f, -0.25f).scale(0.5f, 0.5f, 0.5f)
+    translate(-0.25f, -0.25f, -0.25f)
+    scale(0.5f, 0.5f, 0.5f)
     renderFace()
     GlStateManager.popMatrix()
 

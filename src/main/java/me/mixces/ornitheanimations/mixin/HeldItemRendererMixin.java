@@ -1,15 +1,17 @@
 package me.mixces.ornitheanimations.mixin;
 
+import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.sugar.Local;
 import me.mixces.ornitheanimations.OrnitheAnimations;
 import me.mixces.ornitheanimations.hook.ItemBlacklist;
 import me.mixces.ornitheanimations.util.GlHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.living.player.ClientPlayerEntity;
 import net.minecraft.client.render.HeldItemRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.block.ModelTransformations;
 import net.minecraft.entity.living.LivingEntity;
+import net.minecraft.entity.living.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,10 +25,6 @@ public abstract class HeldItemRendererMixin {
 
 	@Shadow
 	private int selectedSlot;
-
-	@Shadow
-	@Final
-	private Minecraft minecraft;
 
 	@Shadow
 	@Final
@@ -80,7 +78,8 @@ public abstract class HeldItemRendererMixin {
 	private void orintheAnimations$preBowTransform(float tickDelta, ClientPlayerEntity player, CallbackInfo ci) {
 		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get()) {
 			/* original transformations from 1.7 */
-			GlHelper.INSTANCE.roll(-335.0F).yaw(-50.0F);
+			GlHelper.roll(-335.0F);
+			GlHelper.yaw(-50.0F);
 		}
 	}
 
@@ -91,7 +90,8 @@ public abstract class HeldItemRendererMixin {
 	private void orintheAnimations$postBowTransform(float tickDelta, ClientPlayerEntity player, CallbackInfo ci) {
 		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get()) {
 			/* original transformations from 1.7 */
-			GlHelper.INSTANCE.yaw(50.0F).roll(335.0F);
+			GlHelper.yaw(50.0F);
+			GlHelper.roll(335.0F);
 		}
 	}
 
@@ -109,11 +109,15 @@ public abstract class HeldItemRendererMixin {
 		if (renderer.isGui3d(item) || ItemBlacklist.isPresent(item)) {
 			return;
 		}
-		GlHelper builder = GlHelper.INSTANCE;
 		/* original transformations from 1.7 */
-		builder.translate(0.0F, -0.3F, 0.0F).scale(1.5F, 1.5F, 1.5F).yaw(50.0F).roll(335.0F).translate(-0.9375F, -0.0625F, 0.0F);
+		GlHelper.translate(0.0F, -0.3F, 0.0F);
+		GlHelper.scale(1.5F, 1.5F, 1.5F);
+		GlHelper.yaw(50.0F);
+		GlHelper.roll(335.0F);
+		GlHelper.translate(-0.9375F, -0.0625F, 0.0F);
 		/* idk */
-		builder.yaw(180.0F).translate(-0.5F, 0.5F, 0.03125F);
+		GlHelper.yaw(180.0F);
+		GlHelper.translate(-0.5F, 0.5F, 0.03125F);
 	}
 
 	@Inject(
@@ -125,7 +129,7 @@ public abstract class HeldItemRendererMixin {
 	)
 	private void ornitheAnimations$applyRodRotation(float tickDelta, CallbackInfo ci) {
 		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get() && item.getItem().shouldRotate()) {
-			GlHelper.INSTANCE.yaw(180.0F);
+			GlHelper.yaw(180.0F);
 		}
 	}
 
@@ -141,6 +145,22 @@ public abstract class HeldItemRendererMixin {
 		return OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get() && !ItemBlacklist.isPresent(item) ? ModelTransformations.Type.NONE : transform;
 	}
 
+	@Expression("? != null")
+	@ModifyExpressionValue(
+		method = "updateHeldItem",
+		at = @At(
+			value = "MIXINEXTRAS:EXPRESSION",
+			ordinal = 1
+		)
+	)
+	private boolean ornitheAnimations$compareDamage(boolean original, @Local ItemStack itemStack) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_EQUIP_LOGIC().get()) {
+			/* adapted from 1.7 */
+			return original && itemStack != item && itemStack.getItem() == item.getItem() && itemStack.getDamage() == item.getDamage();
+		}
+		return original;
+	}
+
 	@ModifyExpressionValue(
 		method = "updateHeldItem",
 		at = @At(
@@ -148,7 +168,41 @@ public abstract class HeldItemRendererMixin {
 			target = "Lnet/minecraft/item/ItemStack;isEqualForHoldAnimation(Lnet/minecraft/item/ItemStack;)Z"
 		)
 	)
-	private boolean ornitheAnimations$modifyReEquipBehavior(boolean original) {
-		return original && (!OrnitheAnimations.INSTANCE.getConfig().getOLD_EQUIP_LOGIC().get() || selectedSlot == minecraft.player.inventory.selectedSlot);
+	private boolean ornitheAnimations$disableStackEquality(boolean original, @Local ItemStack itemStack) {
+		/* adapted from 1.7 */
+		return !OrnitheAnimations.INSTANCE.getConfig().getOLD_EQUIP_LOGIC().get() && original;
+	}
+
+	@ModifyVariable(
+		method = "updateHeldItem",
+		at = @At(
+			value = "STORE",
+			ordinal = 1
+		),
+		index = 3
+	)
+	private boolean ornitheAnimations$updateItemStack(boolean original, @Local ItemStack itemStack) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_EQUIP_LOGIC().get()) {
+			/* adapted from 1.7 */
+			item = itemStack;
+			return false;
+		}
+		return original;
+	}
+
+	@ModifyVariable(
+		method = "updateHeldItem",
+		at = @At(
+			value = "STORE",
+			ordinal = 3
+		),
+		index = 3
+	)
+	private boolean ornitheAnimations$makeAssignmentRedundant(boolean original, @Local PlayerEntity playerEntity, @Local ItemStack itemStack) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_EQUIP_LOGIC().get()) {
+			/* adapted from 1.7 */
+			return selectedSlot != playerEntity.inventory.selectedSlot || itemStack != item;
+		}
+		return original;
 	}
 }

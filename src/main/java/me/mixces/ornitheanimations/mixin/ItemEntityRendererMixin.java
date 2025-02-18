@@ -2,7 +2,7 @@ package me.mixces.ornitheanimations.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import me.mixces.ornitheanimations.OrnitheAnimations;
-import net.minecraft.client.Minecraft;
+import me.mixces.ornitheanimations.util.GlHelper;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.ItemEntityRenderer;
@@ -10,7 +10,9 @@ import net.minecraft.client.render.model.block.ModelTransformations;
 import net.minecraft.entity.ItemEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ItemEntityRenderer.class)
 public abstract class ItemEntityRendererMixin extends EntityRenderer<ItemEntity> {
@@ -44,5 +46,19 @@ public abstract class ItemEntityRendererMixin extends EntityRenderer<ItemEntity>
 	)
 	private ModelTransformations.Type ornitheAnimations$replaceTransform(ModelTransformations.Type type) {
 		return OrnitheAnimations.INSTANCE.getConfig().getFAST_ITEMS().get() ? ModelTransformations.Type.GUI : type;
+	}
+
+	@Inject(
+		method = "render(Lnet/minecraft/entity/ItemEntity;DDDFF)V",
+		at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/client/render/item/ItemRenderer;renderItem(Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/resource/model/BakedModel;)V",
+			ordinal = 1
+		)
+	)
+	private void ornitheAnimations$applyItemEntityPosition(ItemEntity itemEntity, double d, double e, double f, float g, float h, CallbackInfo ci) {
+		if (OrnitheAnimations.INSTANCE.getConfig().getFAST_ITEMS().get()) {
+			GlHelper.translate(0.0F, 0.0F, 0.3125F);
+		}
 	}
 }
