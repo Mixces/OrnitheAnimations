@@ -1,13 +1,13 @@
 @file:JvmName("ModelUtil")
 
-package me.mixces.ornitheanimations.hook
+package me.mixces.ornitheanimations.util
 
 import me.mixces.ornitheanimations.dsl.mc
 import net.minecraft.client.resource.ModelIdentifier
 import net.minecraft.client.resource.model.BakedModel
 import net.minecraft.item.ItemStack
 
-fun getModelFromIdentifier(model: String): BakedModel {
+fun getModel(model: String): BakedModel {
     return mc.blockRenderDispatcher.modelShaper.manager.getModel(ModelIdentifier(model, "inventory"))
 }
 
@@ -19,5 +19,5 @@ fun getSkullModel(stack: ItemStack): BakedModel {
         4 -> "old_skull_creeper"
         else -> "old_skull_char"
     }
-    return getModelFromIdentifier(id)
+    return getModel(id)
 }

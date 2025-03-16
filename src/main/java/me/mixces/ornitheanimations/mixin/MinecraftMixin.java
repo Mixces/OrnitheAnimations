@@ -1,7 +1,7 @@
 package me.mixces.ornitheanimations.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import me.mixces.ornitheanimations.OrnitheAnimations;
+import me.mixces.ornitheanimations.config.Config;
 import net.minecraft.client.ClientPlayerInteractionManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.living.player.LocalClientPlayerEntity;
@@ -42,7 +42,7 @@ public abstract class MinecraftMixin {
 		at = @At("HEAD")
 	)
 	private void ornitheAnimations$fakeSwingDuringBlockhit(boolean holdingAttack, CallbackInfo ci) {
-		if (!OrnitheAnimations.INSTANCE.getConfig().getBLOCK_HITTING().get()) {
+		if (!Config.INSTANCE.getBLOCK_HITTING().get()) {
 			return;
 		}
 		if (attackCooldown <= 0 && player.isUsingItem() && holdingAttack &&
@@ -64,7 +64,7 @@ public abstract class MinecraftMixin {
 		)
 	)
 	private boolean ornitheAnimations$disableIsHittingCheck(boolean original) {
-		return !OrnitheAnimations.INSTANCE.getConfig().getBLOCK_HITTING().get() && original;
+		return !Config.INSTANCE.getBLOCK_HITTING().get() && original;
 	}
 
 	@Inject(
@@ -72,7 +72,7 @@ public abstract class MinecraftMixin {
 		at = @At("HEAD")
 	)
 	private void ornitheAnimations$oldMissPenalty(CallbackInfo ci) {
-		if (!OrnitheAnimations.INSTANCE.getConfig().getOLD_MISS_PENALTY().get()) {
+		if (!Config.INSTANCE.getOLD_MISS_PENALTY().get()) {
 			return;
 		}
 		if (crosshairTarget != null && crosshairTarget.type != HitResult.Type.BLOCK) {

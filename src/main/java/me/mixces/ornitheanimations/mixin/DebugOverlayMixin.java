@@ -4,7 +4,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import me.mixces.ornitheanimations.OrnitheAnimations;
+import me.mixces.ornitheanimations.config.Config;
 import me.mixces.ornitheanimations.hook.DebugComponents;
 import net.minecraft.client.gui.overlay.DebugOverlay;
 import net.minecraft.client.render.TextRenderer;
@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
@@ -34,7 +33,7 @@ public abstract class DebugOverlayMixin {
 		)
 	)
 	private List<String> ornitheAnimations$replaceGameInfo(List<String> original) {
-		return OrnitheAnimations.INSTANCE.getConfig().getOLD_DEBUG_MENU().get() ? DebugComponents.getLeft() : original;
+		return Config.INSTANCE.getOLD_DEBUG_MENU().get() ? DebugComponents.getLeft() : original;
 	}
 
 	@Inject(
@@ -43,7 +42,7 @@ public abstract class DebugOverlayMixin {
 		remap = false
 	)
 	private void ornitheAnimations$addBottomLeftColumn(CallbackInfo ci) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_DEBUG_MENU().get()) {
+		if (Config.INSTANCE.getOLD_DEBUG_MENU().get()) {
 			/* renders the bottom left column of debug text, but in the greyish color just like 1.7 */
 			final int fontHeight = 8;
 			int top = DebugComponents.getLeft().size() * 10 + 4 /* should be 64, just like 1.7 */;
@@ -63,7 +62,7 @@ public abstract class DebugOverlayMixin {
 		)
 	)
 	private List<String> ornitheAnimations$replaceSystemInfo(List<String> original) {
-		return OrnitheAnimations.INSTANCE.getConfig().getOLD_DEBUG_MENU().get() ? DebugComponents.getRight() : original;
+		return Config.INSTANCE.getOLD_DEBUG_MENU().get() ? DebugComponents.getRight() : original;
 	}
 
 	@WrapOperation(
@@ -75,7 +74,7 @@ public abstract class DebugOverlayMixin {
 		)
 	)
 	private int ornitheAnimations$changeFontHeight(TextRenderer instance, Operation<Integer> original) {
-		return OrnitheAnimations.INSTANCE.getConfig().getOLD_DEBUG_MENU().get() ? 10 : original.call(instance);
+		return Config.INSTANCE.getOLD_DEBUG_MENU().get() ? 10 : original.call(instance);
 	}
 
 	@WrapWithCondition(
@@ -87,7 +86,7 @@ public abstract class DebugOverlayMixin {
 	)
 	private boolean ornitheAnimations$removeBackgroundRectangle(int left, int top, int right, int bottom, int color) {
 		/* disable rendering the rectangular background, just like 1.7 */
-		return !OrnitheAnimations.INSTANCE.getConfig().getOLD_DEBUG_MENU().get();
+		return !Config.INSTANCE.getOLD_DEBUG_MENU().get();
 	}
 
 	@WrapOperation(
@@ -99,7 +98,7 @@ public abstract class DebugOverlayMixin {
 	)
 	private int ornitheAnimations$addTextShadow2(TextRenderer instance, String text, int x, int y, int color, Operation<Integer> original) {
 		/* uses the alternative drawString method which allows text shadows, just like in 1.7 */
-		return instance.draw(text, x, y, color, OrnitheAnimations.INSTANCE.getConfig().getOLD_DEBUG_MENU().get());
+		return instance.draw(text, x, y, color, Config.INSTANCE.getOLD_DEBUG_MENU().get());
 	}
 
 	@WrapOperation(
@@ -111,7 +110,7 @@ public abstract class DebugOverlayMixin {
 	)
 	private int ornitheAnimations$addTextShadow(TextRenderer instance, String text, int x, int y, int color, Operation<Integer> original) {
 		/* same as above redirect, but the text is white, just like in 1.7 */
-		int textColor = OrnitheAnimations.INSTANCE.getConfig().getOLD_DEBUG_MENU().get() ? 16777215 : 0xE0E0E0;
-		return instance.draw(text, x, y, textColor, OrnitheAnimations.INSTANCE.getConfig().getOLD_DEBUG_MENU().get());
+		int textColor = Config.INSTANCE.getOLD_DEBUG_MENU().get() ? 16777215 : 0xE0E0E0;
+		return instance.draw(text, x, y, textColor, Config.INSTANCE.getOLD_DEBUG_MENU().get());
 	}
 }

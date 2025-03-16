@@ -1,8 +1,9 @@
 package me.mixces.ornitheanimations.mixin;
 
-import me.mixces.ornitheanimations.OrnitheAnimations;
+import me.mixces.ornitheanimations.config.Config;
 import net.minecraft.client.entity.living.player.LocalClientPlayerEntity;
 import net.minecraft.client.player.input.PlayerInput;
+import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,11 +25,18 @@ public abstract class LocalClientPlayerEntityMixin extends PlayerEntityMixin {
 		)
     )
     private void ornitheAnimations$sneakYSize(CallbackInfo ci) {
-		if (!OrnitheAnimations.INSTANCE.getConfig().getSMOOTH_SNEAKING().get()) {
+		if (!Config.INSTANCE.getSMOOTH_SNEAKING().get()) {
 			return;
 		}
         if (input.sneaking && ornitheAnimations$ySize < 0.2F) {
             ornitheAnimations$ySize = 0.2F;
         }
     }
+
+
+	@Override
+	public Vec3d getRotationVec(float tickDelta) {
+		/* mc 67665 bug */
+		return getRotationVector(pitch, yaw);
+	}
 }

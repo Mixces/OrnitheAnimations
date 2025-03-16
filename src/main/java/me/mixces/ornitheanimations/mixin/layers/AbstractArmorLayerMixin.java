@@ -1,6 +1,6 @@
 package me.mixces.ornitheanimations.mixin.layers;
 
-import me.mixces.ornitheanimations.OrnitheAnimations;
+import me.mixces.ornitheanimations.config.Config;
 import me.mixces.ornitheanimations.hook.DamageTint;
 import me.mixces.ornitheanimations.shared.IDamageTint;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
@@ -34,7 +34,7 @@ public abstract class AbstractArmorLayerMixin {
     )
     private void ornitheAnimations$addDamageBrightness(LivingEntity entity, float handSwingAmount, float handSwing, float tickDelta, float age, float headYaw, float headPitch, float scale, int equipmentSlot, CallbackInfo ci) {
 		/* colors the armor pieces red just like 1.7 */
-		if (!OrnitheAnimations.INSTANCE.getConfig().getOLD_DAMAGE_TINT().get()) {
+		if (!Config.INSTANCE.getOLD_DAMAGE_TINT().get()) {
 			return;
 		}
 		if (((IDamageTint) parent).ornitheAnimations$setupOverlayColor(entity, tickDelta)) {

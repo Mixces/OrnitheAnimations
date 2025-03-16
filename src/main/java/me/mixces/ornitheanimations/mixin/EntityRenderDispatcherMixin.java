@@ -1,6 +1,6 @@
 package me.mixces.ornitheanimations.mixin;
 
-import me.mixces.ornitheanimations.OrnitheAnimations;
+import me.mixces.ornitheanimations.config.Config;
 import net.minecraft.client.entity.living.player.ClientPlayerEntity;
 import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.render.TextRenderer;
@@ -44,7 +44,7 @@ public abstract class EntityRenderDispatcherMixin {
 		)
 	)
 	private void ornitheAnimations$fixCameraRotation(World world, TextRenderer textRenderer, Entity camera, Entity targetEntity, GameOptions options, float tickDelta, CallbackInfo ci) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getMIRRORED_PROJECTILES().get()) {
+		if (Config.INSTANCE.getMIRRORED_PROJECTILES().get()) {
 			cameraPitch *= -1;
 		}
 	}
@@ -55,7 +55,7 @@ public abstract class EntityRenderDispatcherMixin {
 		cancellable = true
 	)
 	private void ornitheAnimations$defaultToSteve(Entity entity, CallbackInfoReturnable<PlayerRenderer> cir) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getSIMPLE_SKIN_RENDERING().get() && entity instanceof ClientPlayerEntity) {
+		if (Config.INSTANCE.getOLD_SKIN_RENDERING().get() && entity instanceof ClientPlayerEntity) {
 			/* 1.7 doesn't have Alex skins! */
 			/* thank you toggle */
 			cir.setReturnValue(defaultPlayerRenderer);

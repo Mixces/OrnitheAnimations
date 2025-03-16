@@ -29,7 +29,7 @@ object Config : BaseConfig() {
     val OLD_XP_ORB_RENDERING: BooleanOption = BooleanOption("oldXpOrbRendering", null, true)
     val FAST_ITEMS: BooleanOption = BooleanOption("fastItems", null, true)
     val REPLACE_CAST_ROD: BooleanOption = BooleanOption("replaceCastRod", null, true)
-    val SIMPLE_SKIN_RENDERING: BooleanOption = BooleanOption("simpleSkinRendering", null, true)
+    val OLD_SKIN_RENDERING: BooleanOption = BooleanOption("oldSkinRendering", null, true)
     val OLD_FLAME_OFFSET: BooleanOption = BooleanOption("oldFlameOffset", null, true)
     val OLD_SKULL_MODEL: BooleanOption = BooleanOption("oldSkullModel", null, true)
 
@@ -86,7 +86,7 @@ object Config : BaseConfig() {
             OLD_XP_ORB_RENDERING,
             FAST_ITEMS,
             REPLACE_CAST_ROD,
-            SIMPLE_SKIN_RENDERING,
+            OLD_SKIN_RENDERING,
             OLD_FLAME_OFFSET,
             OLD_SKULL_MODEL,
             REMOVE_HEART_FLASHING,

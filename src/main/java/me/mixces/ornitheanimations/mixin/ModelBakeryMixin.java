@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @Mixin(ModelBakery.class)
-public class ModelBakeryMixin {
+public abstract class ModelBakeryMixin {
 
     @Shadow
     private Map<Item, List<String>> itemVariants;
@@ -24,19 +24,19 @@ public class ModelBakeryMixin {
         at = @At("TAIL")
     )
     private void ornitheAnimations$registerCustomModels(CallbackInfo ci) {
-        /* register our custom models */
-        // TODO: how can i get the option to load :sob:
+		/* register our custom models */
+		// TODO: how can i get the option to load :sob:
 
-        /* potions */
-        List<String> originalPotions = itemVariants.get(Items.POTION);
-        List<String> potionComponents = Arrays.asList("bottle_drinkable_empty", "bottle_overlay", "bottle_splash_empty");
-        originalPotions.addAll(potionComponents);
-        itemVariants.put(Items.POTION, originalPotions);
+		/* potions */
+		List<String> originalPotions = itemVariants.get(Items.POTION);
+		List<String> potionComponents = Arrays.asList("bottle_drinkable_empty", "bottle_overlay", "bottle_splash_empty");
+		originalPotions.addAll(potionComponents);
+		itemVariants.put(Items.POTION, originalPotions);
 
-        /* skulls */
-        List<String> originalSkulls = itemVariants.get(Items.SKULL);
-        List<String> oldSkulls = Arrays.asList("old_skull_skeleton", "old_skull_wither", "old_skull_zombie", "old_skull_char", "old_skull_creeper");
-        originalSkulls.addAll(oldSkulls);
-        itemVariants.put(Items.SKULL, originalSkulls);
+		/* skulls */
+		List<String> originalSkulls = itemVariants.get(Items.SKULL);
+		List<String> oldSkulls = Arrays.asList("old_skull_skeleton", "old_skull_wither", "old_skull_zombie", "old_skull_char", "old_skull_creeper");
+		originalSkulls.addAll(oldSkulls);
+		itemVariants.put(Items.SKULL, originalSkulls);
     }
 }

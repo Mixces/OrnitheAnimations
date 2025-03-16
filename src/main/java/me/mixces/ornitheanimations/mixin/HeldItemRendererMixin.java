@@ -3,7 +3,7 @@ package me.mixces.ornitheanimations.mixin;
 import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import me.mixces.ornitheanimations.OrnitheAnimations;
+import me.mixces.ornitheanimations.config.Config;
 import me.mixces.ornitheanimations.hook.ItemBlacklist;
 import me.mixces.ornitheanimations.util.GlHelper;
 import net.minecraft.client.entity.living.player.ClientPlayerEntity;
@@ -65,7 +65,7 @@ public abstract class HeldItemRendererMixin {
 		index = 1
 	)
 	private float ornitheAnimations$useCapture(float swingProgress) {
-		return OrnitheAnimations.INSTANCE.getConfig().getBLOCK_HITTING().get() ? ornitheAnimations$g.get() : swingProgress;
+		return Config.INSTANCE.getBLOCK_HITTING().get() ? ornitheAnimations$g.get() : swingProgress;
 	}
 
 	@Inject(
@@ -76,7 +76,7 @@ public abstract class HeldItemRendererMixin {
 		)
 	)
 	private void orintheAnimations$preBowTransform(float tickDelta, ClientPlayerEntity player, CallbackInfo ci) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get()) {
+		if (Config.INSTANCE.getOLD_ITEM_POSITIONS().get()) {
 			/* original transformations from 1.7 */
 			GlHelper.roll(-335.0F);
 			GlHelper.yaw(-50.0F);
@@ -88,7 +88,7 @@ public abstract class HeldItemRendererMixin {
 		at = @At("TAIL")
 	)
 	private void orintheAnimations$postBowTransform(float tickDelta, ClientPlayerEntity player, CallbackInfo ci) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get()) {
+		if (Config.INSTANCE.getOLD_ITEM_POSITIONS().get()) {
 			/* original transformations from 1.7 */
 			GlHelper.yaw(50.0F);
 			GlHelper.roll(335.0F);
@@ -103,7 +103,7 @@ public abstract class HeldItemRendererMixin {
 		)
 	)
 	private void ornitheAnimations$applyHeldItemTransforms(LivingEntity entity, ItemStack item, ModelTransformations.Type transform, CallbackInfo ci) {
-		if (!OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get()) {
+		if (!Config.INSTANCE.getOLD_ITEM_POSITIONS().get()) {
 			return;
 		}
 		if (renderer.isGui3d(item) || ItemBlacklist.isPresent(item)) {
@@ -128,7 +128,7 @@ public abstract class HeldItemRendererMixin {
 		)
 	)
 	private void ornitheAnimations$applyRodRotation(float tickDelta, CallbackInfo ci) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get() && item.getItem().shouldRotate()) {
+		if (Config.INSTANCE.getOLD_ITEM_POSITIONS().get() && item.getItem().shouldRotate()) {
 			GlHelper.yaw(180.0F);
 		}
 	}
@@ -142,7 +142,7 @@ public abstract class HeldItemRendererMixin {
 		index = 2
 	)
 	private ModelTransformations.Type ornitheAnimations$changeTransformType(ModelTransformations.Type transform) {
-		return OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get() && !ItemBlacklist.isPresent(item) ? ModelTransformations.Type.NONE : transform;
+		return Config.INSTANCE.getOLD_ITEM_POSITIONS().get() && !ItemBlacklist.isPresent(item) ? ModelTransformations.Type.NONE : transform;
 	}
 
 	@Expression("? != null")
@@ -154,7 +154,7 @@ public abstract class HeldItemRendererMixin {
 		)
 	)
 	private boolean ornitheAnimations$compareDamage(boolean original, @Local ItemStack itemStack) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_EQUIP_LOGIC().get()) {
+		if (Config.INSTANCE.getOLD_EQUIP_LOGIC().get()) {
 			/* adapted from 1.7 */
 			return original && itemStack != item && itemStack.getItem() == item.getItem() && itemStack.getDamage() == item.getDamage();
 		}
@@ -170,7 +170,7 @@ public abstract class HeldItemRendererMixin {
 	)
 	private boolean ornitheAnimations$disableStackEquality(boolean original, @Local ItemStack itemStack) {
 		/* adapted from 1.7 */
-		return !OrnitheAnimations.INSTANCE.getConfig().getOLD_EQUIP_LOGIC().get() && original;
+		return !Config.INSTANCE.getOLD_EQUIP_LOGIC().get() && original;
 	}
 
 	@ModifyVariable(
@@ -182,7 +182,7 @@ public abstract class HeldItemRendererMixin {
 		index = 3
 	)
 	private boolean ornitheAnimations$updateItemStack(boolean original, @Local ItemStack itemStack) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_EQUIP_LOGIC().get()) {
+		if (Config.INSTANCE.getOLD_EQUIP_LOGIC().get()) {
 			/* adapted from 1.7 */
 			item = itemStack;
 			return false;
@@ -199,7 +199,7 @@ public abstract class HeldItemRendererMixin {
 		index = 3
 	)
 	private boolean ornitheAnimations$makeAssignmentRedundant(boolean original, @Local PlayerEntity playerEntity, @Local ItemStack itemStack) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_EQUIP_LOGIC().get()) {
+		if (Config.INSTANCE.getOLD_EQUIP_LOGIC().get()) {
 			/* adapted from 1.7 */
 			return selectedSlot != playerEntity.inventory.selectedSlot || itemStack != item;
 		}

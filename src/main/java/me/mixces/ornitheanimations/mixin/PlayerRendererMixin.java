@@ -1,7 +1,7 @@
 package me.mixces.ornitheanimations.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import me.mixces.ornitheanimations.OrnitheAnimations;
+import me.mixces.ornitheanimations.config.Config;
 import net.minecraft.client.entity.living.player.ClientPlayerEntity;
 import net.minecraft.client.render.entity.PlayerRenderer;
 import net.minecraft.client.render.model.ModelPart;
@@ -28,7 +28,7 @@ public abstract class PlayerRendererMixin {
 		)
 	)
 	private void ornitheAnimations$reAssignShownLayer(ClientPlayerEntity entity, CallbackInfo ci) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getSIMPLE_SKIN_RENDERING().get()) {
+		if (Config.INSTANCE.getOLD_SKIN_RENDERING().get()) {
 			/* 1.7 doesn't have any skin layers except for the headwear */
 			PlayerModel playerModel = getModel();
 			ModelPart[] wearLayers = {
@@ -53,7 +53,7 @@ public abstract class PlayerRendererMixin {
 		)
 	)
 	private void ornitheAnimations$dontSetModelStatus(ClientPlayerEntity player, CallbackInfo ci, @Local PlayerModel playerModel) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getFIX_ARM_ITEM_ROTATION().get()) {
+		if (Config.INSTANCE.getFIX_ARM_ITEM_ROTATION().get()) {
 			/* don't apply third person arm rotation to first person */
 			playerModel.rightHandItemId = 0;
 		}

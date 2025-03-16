@@ -1,7 +1,7 @@
 package me.mixces.ornitheanimations.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import me.mixces.ornitheanimations.OrnitheAnimations;
+import me.mixces.ornitheanimations.config.Config;
 import net.minecraft.client.ClientPlayerInteractionManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -21,6 +21,6 @@ public abstract class ClientPlayerInteractionManagerMixin {
 		)
 	)
 	private boolean ornitheAnimations$resetDestroyProgress(boolean original) {
-		return OrnitheAnimations.INSTANCE.getConfig().getBLOCK_HITTING().get() ? original && isMiningBlock() : original;
+		return Config.INSTANCE.getBLOCK_HITTING().get() ? original && isMiningBlock() : original;
 	}
 }

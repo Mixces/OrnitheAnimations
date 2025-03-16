@@ -1,7 +1,7 @@
 package me.mixces.ornitheanimations.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import me.mixces.ornitheanimations.OrnitheAnimations;
+import me.mixces.ornitheanimations.config.Config;
 import me.mixces.ornitheanimations.util.GlHelper;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
@@ -30,7 +30,7 @@ public abstract class ItemEntityRendererMixin extends EntityRenderer<ItemEntity>
 		index = 0
 	)
 	private float ornitheAnimations$itemFacePlayer(float angle, @Local boolean bl) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getFAST_ITEMS().get() && !bl) {
+		if (Config.INSTANCE.getFAST_ITEMS().get() && !bl) {
 			return 180.0F - dispatcher.cameraYaw;
 		}
 		return angle;
@@ -45,7 +45,7 @@ public abstract class ItemEntityRendererMixin extends EntityRenderer<ItemEntity>
 		)
 	)
 	private ModelTransformations.Type ornitheAnimations$replaceTransform(ModelTransformations.Type type) {
-		return OrnitheAnimations.INSTANCE.getConfig().getFAST_ITEMS().get() ? ModelTransformations.Type.GUI : type;
+		return Config.INSTANCE.getFAST_ITEMS().get() ? ModelTransformations.Type.GUI : type;
 	}
 
 	@Inject(
@@ -57,8 +57,9 @@ public abstract class ItemEntityRendererMixin extends EntityRenderer<ItemEntity>
 		)
 	)
 	private void ornitheAnimations$applyItemEntityPosition(ItemEntity itemEntity, double d, double e, double f, float g, float h, CallbackInfo ci) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getFAST_ITEMS().get()) {
-			GlHelper.translate(0.0F, 0.0F, 0.3125F);
+		if (Config.INSTANCE.getFAST_ITEMS().get()) {
+			/* half of a pixel, matches 1.7's sprite rendering */
+			GlHelper.translate(0.0F, 0.0F, 0.03125F);
 		}
 	}
 }

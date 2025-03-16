@@ -2,7 +2,7 @@ package me.mixces.ornitheanimations.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import me.mixces.ornitheanimations.OrnitheAnimations;
+import me.mixces.ornitheanimations.config.Config;
 import net.minecraft.client.render.model.ModelPart;
 import net.minecraft.client.render.model.entity.HumanoidModel;
 import net.minecraft.entity.Entity;
@@ -28,7 +28,7 @@ public abstract class HumanoidModelMixin {
 		)
 	)
 	private boolean ornitheAnimations$disableSneakTranslation(Entity instance, Operation<Boolean> original) {
-		return !OrnitheAnimations.INSTANCE.getConfig().getSMOOTH_SNEAKING().get() && original.call(instance);
+		return !Config.INSTANCE.getSMOOTH_SNEAKING().get() && original.call(instance);
 	}
 
     @Inject(
@@ -55,7 +55,7 @@ public abstract class HumanoidModelMixin {
 		)
     )
     private void ornitheAnimations$reAssignArmPosition(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn, CallbackInfo ci) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get()) {
+		if (Config.INSTANCE.getOLD_ITEM_POSITIONS().get()) {
 			rightArm.rotationY = 0.0f;
 		}
     }

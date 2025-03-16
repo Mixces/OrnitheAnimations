@@ -1,7 +1,7 @@
 package me.mixces.ornitheanimations.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import me.mixces.ornitheanimations.OrnitheAnimations;
+import me.mixces.ornitheanimations.config.Config;
 import net.minecraft.client.entity.particle.EntityPickupParticle;
 import net.minecraft.entity.Entity;
 import org.objectweb.asm.Opcodes;
@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(EntityPickupParticle.class)
-public class EntityPickupParticleMixin {
+public abstract class EntityPickupParticleMixin {
 
 	@Shadow
 	private Entity collector;
@@ -24,7 +24,7 @@ public class EntityPickupParticleMixin {
 		)
 	)
 	private double ornitheAnimations$includeEyeHeight$PrevTickY(double original) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_PICKUP().get()) {
+		if (Config.INSTANCE.getOLD_ITEM_PICKUP().get()) {
 			/* taken from 1.7 */
 			original += collector.getEyeHeight();
 		}
@@ -41,7 +41,7 @@ public class EntityPickupParticleMixin {
 		)
 	)
 	private double ornitheAnimations$includeEyeHeight$Y(double original) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_PICKUP().get()) {
+		if (Config.INSTANCE.getOLD_ITEM_PICKUP().get()) {
 			/* taken from 1.7 */
 			original += collector.getEyeHeight();
 		}

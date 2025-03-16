@@ -5,7 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.platform.GlStateManager;
-import me.mixces.ornitheanimations.OrnitheAnimations;
+import me.mixces.ornitheanimations.config.Config;
 import me.mixces.ornitheanimations.hook.PlayerHook;
 import me.mixces.ornitheanimations.util.GlHelper;
 import net.minecraft.client.render.entity.EntityRenderer;
@@ -26,7 +26,7 @@ public abstract class EntityRendererMixin {
 		)
 	)
 	private double ornitheAnimations$includeEyeHeight$Y(double original, @Local(argsOnly = true) Entity entity) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_FLAME_OFFSET().get() && PlayerHook.isSelf(entity)) {
+		if (Config.INSTANCE.getOLD_FLAME_OFFSET().get() && PlayerHook.isSelf(entity)) {
 			/* taken from 1.7 */
 			original += entity.getEyeHeight();
 		}
@@ -41,7 +41,7 @@ public abstract class EntityRendererMixin {
 		)
 	)
 	private void ornitheAnimations$includeEyeHeight$renderFire(EntityRenderer<?> instance, Entity entity, double dx, double dy, double dz, float tickDelta, Operation<Void> original) {
-		boolean oldFlameHeight = OrnitheAnimations.INSTANCE.getConfig().getOLD_FLAME_OFFSET().get() && PlayerHook.isSelf(entity);
+		boolean oldFlameHeight = Config.INSTANCE.getOLD_FLAME_OFFSET().get() && PlayerHook.isSelf(entity);
 		if (oldFlameHeight) {
 			GlStateManager.pushMatrix();
 			/* taken from 1.7 */

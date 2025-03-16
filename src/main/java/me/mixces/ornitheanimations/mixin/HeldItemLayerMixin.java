@@ -6,7 +6,8 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import me.mixces.ornitheanimations.OrnitheAnimations;
+import com.mojang.blaze3d.platform.GlStateManager;
+import me.mixces.ornitheanimations.config.Config;
 import me.mixces.ornitheanimations.hook.ItemBlacklist;
 import me.mixces.ornitheanimations.util.GlHelper;
 import net.minecraft.client.Minecraft;
@@ -35,7 +36,7 @@ public abstract class HeldItemLayerMixin {
 		index = 0
 	)
 	private Item ornitheAnimations$changeToStick(Item item) {
-		return OrnitheAnimations.INSTANCE.getConfig().getREPLACE_CAST_ROD().get() ? Items.STICK : item;
+		return Config.INSTANCE.getREPLACE_CAST_ROD().get() ? Items.STICK : item;
 	}
 
 	@Definition(
@@ -48,7 +49,7 @@ public abstract class HeldItemLayerMixin {
 		at = @At("MIXINEXTRAS:EXPRESSION")
 	)
 	private boolean ornitheAnimations$allowBlocksTransforms(boolean original) {
-		return OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get() || original;
+		return Config.INSTANCE.getOLD_ITEM_POSITIONS().get() || original;
 	}
 
 	@WrapOperation(
@@ -59,8 +60,8 @@ public abstract class HeldItemLayerMixin {
 		)
 	)
 	private boolean ornitheAnimations$disableSneakTranslation(LivingEntity instance, Operation<Boolean> original) {
-		return !OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get() &&
-			!OrnitheAnimations.INSTANCE.getConfig().getSMOOTH_SNEAKING().get() && original.call(instance);
+		return !Config.INSTANCE.getOLD_ITEM_POSITIONS().get() &&
+			!Config.INSTANCE.getSMOOTH_SNEAKING().get() && original.call(instance);
 	}
 
 	@Inject(
@@ -71,8 +72,8 @@ public abstract class HeldItemLayerMixin {
 		)
 	)
 	private void legarity$mc125204fix(LivingEntity entity, float handSwingAmount, float handSwing, float tickDelta, float age, float headYaw, float headPitch, float scale, CallbackInfo ci) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get() &&
-			!OrnitheAnimations.INSTANCE.getConfig().getSMOOTH_SNEAKING().get() && entity.isSneaking()) {
+		if (Config.INSTANCE.getOLD_ITEM_POSITIONS().get() &&
+			!Config.INSTANCE.getSMOOTH_SNEAKING().get() && entity.isSneaking()) {
 			GlHelper.translate(0.0F, 0.2F, 0.0F);
 		}
 	}
@@ -85,7 +86,7 @@ public abstract class HeldItemLayerMixin {
 		)
     )
     private void ornitheAnimations$applyHeldItemLayerTransforms(LivingEntity entity, float handSwingAmount, float handSwing, float tickDelta, float age, float headYaw, float headPitch, float scale, CallbackInfo ci, @Local(ordinal = 0, index = 9) ItemStack stack, @Local(ordinal = 0, index = 10) Item item) {
-		if (!OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get()) {
+		if (!Config.INSTANCE.getOLD_ITEM_POSITIONS().get()) {
 			return;
 		}
 		if (Minecraft.getInstance().getItemRenderer().isGui3d(stack) || ItemBlacklist.isPresent(stack)) {
@@ -94,6 +95,7 @@ public abstract class HeldItemLayerMixin {
 		/* original transformations from 1.7 */
 		float var7;
 		if (item == Items.BOW) {
+			GlStateManager.cullFace(1028);
 			var7 = 0.625F;
 			GlHelper.translate(0.0F, 0.125F, 0.3125F);
 			GlHelper.yaw(-20.0F);
@@ -101,6 +103,7 @@ public abstract class HeldItemLayerMixin {
 			GlHelper.pitch(-100.0F);
 			GlHelper.yaw(45.0F);
 		} else if (item.isHandheld()) {
+			GlStateManager.cullFace(1028);
 			var7 = 0.625F;
 			if (item.shouldRotate()) {
 				GlHelper.roll(180.0F);
@@ -117,6 +120,7 @@ public abstract class HeldItemLayerMixin {
 			GlHelper.pitch(-100.0F);
 			GlHelper.yaw(45.0F);
 		} else {
+			GlStateManager.cullFace(1029);
 			var7 = 0.375F;
 			GlHelper.translate(0.25F, 0.1875F, -0.1875F);
 			GlHelper.scale(var7, var7, var7);
@@ -135,6 +139,6 @@ public abstract class HeldItemLayerMixin {
 		index = 2
 	)
 	private ModelTransformations.Type ornitheAnimations$changeTransformType(ModelTransformations.Type transform, @Local ItemStack itemStack) {
-		return OrnitheAnimations.INSTANCE.getConfig().getOLD_ITEM_POSITIONS().get() && !ItemBlacklist.isPresent(itemStack) ? ModelTransformations.Type.NONE : transform;
+		return Config.INSTANCE.getOLD_ITEM_POSITIONS().get() && !ItemBlacklist.isPresent(itemStack) ? ModelTransformations.Type.NONE : transform;
 	}
 }

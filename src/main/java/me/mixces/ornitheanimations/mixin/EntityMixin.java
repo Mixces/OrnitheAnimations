@@ -1,8 +1,9 @@
 package me.mixces.ornitheanimations.mixin;
 
-import me.mixces.ornitheanimations.OrnitheAnimations;
+import me.mixces.ornitheanimations.config.Config;
 import me.mixces.ornitheanimations.hook.PlayerHook;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Vec3d;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -11,16 +12,29 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@SuppressWarnings("unused")
 @Mixin(Entity.class)
 public abstract class EntityMixin {
 
 	@Shadow
+	public float pitch;
+
+	@Shadow
+	public float yaw;
+
+	@Shadow
 	public double y;
 
-    @Unique
+	@Unique
 	public float ornitheAnimations$ySize;
 
-    @Inject(
+	@Shadow
+	public abstract Vec3d getRotationVec(float tickDelta);
+
+	@Shadow
+	protected abstract Vec3d getRotationVector(float pitch, float yaw);
+
+	@Inject(
 		method = "move",
 		at = @At(
 			value = "INVOKE_STRING",
@@ -28,14 +42,14 @@ public abstract class EntityMixin {
 			args = "ldc=move",
 			shift = At.Shift.AFTER
 		)
-    )
-    private void ornitheAnimations$smoothenYSize(double x, double y, double z, CallbackInfo ci) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getSMOOTH_SNEAKING().get()) {
+	)
+	private void ornitheAnimations$smoothenYSize(double x, double y, double z, CallbackInfo ci) {
+		if (Config.INSTANCE.getSMOOTH_SNEAKING().get()) {
 			ornitheAnimations$ySize *= 0.4F;
 		}
-    }
+	}
 
-    @Inject(
+	@Inject(
 		method = "setPositionFromShape",
 		at = @At(
 			value = "FIELD",
@@ -43,10 +57,10 @@ public abstract class EntityMixin {
 			target = "Lnet/minecraft/entity/Entity;y:D",
 			shift = At.Shift.AFTER
 		)
-    )
-    private void ornitheAnimations$reAssignY(CallbackInfo ci) {
-		if (OrnitheAnimations.INSTANCE.getConfig().getSMOOTH_SNEAKING().get() && PlayerHook.isSelf((Entity) (Object) this)) {
+	)
+	private void ornitheAnimations$reAssignY(CallbackInfo ci) {
+		if (Config.INSTANCE.getSMOOTH_SNEAKING().get() && PlayerHook.isSelf((Entity) (Object) this)) {
 			y -= ornitheAnimations$ySize;
 		}
-    }
+	}
 }

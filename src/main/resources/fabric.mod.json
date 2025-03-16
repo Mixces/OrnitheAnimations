@@ -10,7 +10,6 @@
 	"contact": {
 		"sources": "https://github.com/Mixces/OrnitheAnimations"
 	},
-	"license": "CC0-1.0",
 	"icon": "assets/ornitheanimations/icon.png",
 	"environment": "client",
 	"entrypoints": {
@@ -28,9 +27,9 @@
 		"ornitheanimations.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.14.21",
-		"minecraft": "1.8.9",
-		"osl-entrypoints": ">=0.4.0",
+    "fabricloader": ">=0.14.21",
+    "minecraft": "1.8.9",
+    "osl-entrypoints": ">=0.4.0",
     "fabric-language-kotlin": ">=1.12.3+kotlin.2.0.21"
 	}
 }

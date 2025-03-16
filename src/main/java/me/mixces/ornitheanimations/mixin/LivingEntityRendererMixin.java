@@ -1,7 +1,7 @@
 package me.mixces.ornitheanimations.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import me.mixces.ornitheanimations.OrnitheAnimations;
+import me.mixces.ornitheanimations.config.Config;
 import me.mixces.ornitheanimations.config.Config;
 import me.mixces.ornitheanimations.hook.DamageTint;
 import me.mixces.ornitheanimations.shared.IDamageTint;
@@ -62,7 +62,7 @@ public abstract class LivingEntityRendererMixin implements IDamageTint {
 	private void ornitheAnimations$cancelDamageBrightness(LivingEntityRenderer<LivingEntity> instance, LivingEntity entity, float handSwing, float handSwingAmount, float age, float yaw, float pitch, float scale) {
 		renderHand(entity, handSwing, handSwingAmount, age, yaw, pitch, scale);
 
-		if (!OrnitheAnimations.INSTANCE.getConfig().getOLD_DAMAGE_TINT().get()) {
+		if (!Config.INSTANCE.getOLD_DAMAGE_TINT().get()) {
 			return;
 		}
 
@@ -90,7 +90,7 @@ public abstract class LivingEntityRendererMixin implements IDamageTint {
 	)
 	private boolean ornitheAnimations$cancelDamageBrightness(LivingEntityRenderer<LivingEntity> instance, LivingEntity entity, float tickDelta) {
 		/* cancel model damage tint */
-		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_DAMAGE_TINT().get()) {
+		if (Config.INSTANCE.getOLD_DAMAGE_TINT().get()) {
 			return false;
 		}
 		return setupOverlayColor(entity, tickDelta);
@@ -105,7 +105,7 @@ public abstract class LivingEntityRendererMixin implements IDamageTint {
 	)
 	private boolean ornitheAnimations$cancelDamageBrightness2(LivingEntityRenderer<LivingEntity> instance, LivingEntity entity, float tickDelta, boolean bl) {
 		/* cancel layer damage tint */
-		if (OrnitheAnimations.INSTANCE.getConfig().getOLD_DAMAGE_TINT().get()) {
+		if (Config.INSTANCE.getOLD_DAMAGE_TINT().get()) {
 			return false;
 		}
 		return setupOverlayColor(entity, tickDelta, bl);

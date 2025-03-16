@@ -1,6 +1,5 @@
 package me.mixces.ornitheanimations.config
 
-import me.mixces.ornitheanimations.OrnitheAnimations
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.client.gui.widget.EntryListWidget
@@ -19,7 +18,7 @@ class ConfigScreen(
 
     override fun init() {
         super.init()
-        val group: OptionGroup = OrnitheAnimations.config.getGroup(Config.GROUP_NAME)
+        val group: OptionGroup = Config.getGroup(Config.GROUP_NAME)
         listWidget = ConfigListEntry(minecraft, width, height, 32, height - 32, 25, group)
         buttons.clear()
         buttons.add(ButtonWidget(0, width / 2 - 100, height - 27, "Done"))
